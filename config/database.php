@@ -3,10 +3,10 @@
 // DATABASE CONNECTION
 // =============================================
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'digitaltax_portal');
-define('DB_USER', 'root');       // Change to your DB username
-define('DB_PASS', '');           // Change to your DB password
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: 'digitaltax_portal');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 class Database {
