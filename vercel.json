@@ -1,0 +1,25 @@
+{
+  "functions": {
+    "*.php": {
+      "runtime": "vercel-php@0.7.1"
+    }
+  },
+  "routes": [
+    { "src": "/admin/dashboard", "dest": "/admin/dashboard.php" },
+    { "src": "/admin/login", "dest": "/admin/login.php" },
+    { "src": "/admin/logout", "dest": "/admin/logout.php" },
+    { "src": "/admin/clients", "dest": "/admin/clients.php" },
+    { "src": "/dashboard", "dest": "/dashboard.php" },
+    { "src": "/login", "dest": "/login.php" },
+    { "src": "/signup", "dest": "/signup.php" },
+    { "src": "/logout", "dest": "/logout.php" },
+    { "src": "/expenses", "dest": "/expenses.php" },
+    { "src": "/income", "dest": "/income.php" },
+    { "src": "/taxes", "dest": "/taxes.php" },
+    { "src": "/mileage", "dest": "/mileage.php" },
+    { "src": "/notes", "dest": "/notes.php" },
+    { "src": "/settings", "dest": "/settings.php" },
+    { "src": "/summary", "dest": "/summary.php" },
+    { "src": "/(.*)", "dest": "/index.php" }
+  ]
+}
