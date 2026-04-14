@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<?php require_once __DIR__.'/config/config.php'; require_once __DIR__.'/includes/auth.php'; echo generateCsrf(); ?>">
+  <title>Income — Digital Tax Accounting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+<?php
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/functions.php';
+
+requireClientLogin();
+$client   = getClient();
+$clientId = (int)$_SESSION['client_id'];
+$year     = (int)($_GET['year'] ?? getTaxYear());
+
+// Fetch income records
+$stmt = db()->prepare("SELECT * FROM income WHERE client_id=? AND tax_year=? ORDER BY income_date DESC");
+$stmt->execute([$clientId, $year]);
+$records = $stmt->fetchAll();
+
+$total = array_sum(array_column($records, 'amount'));
+$years = range(date('Y'), date('Y') - 5);
+
+$categories = ['General','Freelance/Contract','Salary/Wages','Business Revenue','Rental','Investment','Bonus','Refund','Other'];
+?>
+
+<div class="app-layout">
+  <?php include __DIR__ . '/includes/sidebar.php'; ?>
+
+  <div class="main-content">
+    <header class="top-header">
+      <button class="header-menu-btn" id="menuBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="header-title">
+        <h1>Income</h1>
+        <p>Track all your income sources for <?= $year ?></p>
+      </div>
+      <div class="header-actions">
+        <select class="form-control" id="yearSelector" style="width:auto;padding:8px 32px 8px 12px;font-size:13px;font-weight:600;">
+          <?php foreach ($years as $y): ?>
+            <option value="<?= $y ?>" <?= $y === $year ? 'selected' : '' ?>><?= $y ?></option>
+          <?php endforeach; ?>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="exportTableToCsv('incomeTable','income_<?= $year ?>.csv')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <button class="btn btn-primary btn-sm" data-open-modal="addIncomeModal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Income
+        </button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div id="alertContainer"></div>
+
+      <!-- Summary Card -->
+      <div class="card mb-24" style="background:linear-gradient(135deg,#ECFDF5 0%,#F0FFF8 100%);border-color:#A7F3D0;">
+        <div class="card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="flex:1">
+            <div style="font-size:13px;color:var(--success);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Income — <?= $year ?></div>
+            <div style="font-size:36px;font-weight:800;color:#065f46"><?= formatCurrency($total) ?></div>
+          </div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <div style="text-align:center;padding:12px 20px;background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+              <div style="font-size:22px;font-weight:800;color:var(--blue)"><?= count($records) ?></div>
+              <div style="font-size:12px;color:var(--gray-500)">Entries</div>
+            </div>
+            <div style="text-align:center;padding:12px 20px;background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+              <div style="font-size:22px;font-weight:800;color:var(--blue)"><?= count(array_unique(array_column($records,'category'))) ?></div>
+              <div style="font-size:12px;color:var(--gray-500)">Categories</div>
+            </div>
+            <?php if (count($records) > 0): ?>
+            <div style="text-align:center;padding:12px 20px;background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+              <div style="font-size:22px;font-weight:800;color:var(--blue)"><?= formatCurrency($total / count($records)) ?></div>
+              <div style="font-size:12px;color:var(--gray-500)">Avg. Entry</div>
+            </div>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="card">
+        <div class="card-header" style="padding:20px 24px">
+          <span class="card-title">Income Records</span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="admin-search" style="min-width:220px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="tableSearch" placeholder="Search income...">
+            </div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <?php if (empty($records)): ?>
+            <div class="empty-state" style="padding:60px 24px">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              </div>
+              <h3>No income records yet</h3>
+              <p>Start tracking your income for <?= $year ?></p>
+              <button class="btn btn-primary" data-open-modal="addIncomeModal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add First Income
+              </button>
+            </div>
+          <?php else: ?>
+            <table class="data-table" id="incomeTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Payment Method</th>
+                  <th class="text-right">Amount</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($records as $r): ?>
+                  <tr>
+                    <td style="white-space:nowrap;color:var(--gray-500);font-size:13px"><?= formatDate($r['income_date']) ?></td>
+                    <td>
+                      <div style="font-weight:600;color:var(--blue)"><?= sanitize($r['description']) ?></div>
+                      <?php if ($r['notes']): ?><div style="font-size:12px;color:var(--gray-400)"><?= sanitize(substr($r['notes'],0,60)) ?></div><?php endif; ?>
+                    </td>
+                    <td><span class="badge badge-success"><?= sanitize($r['category']) ?></span></td>
+                    <td style="font-size:13px;color:var(--gray-500)"><?= sanitize($r['payment_method'] ?: '—') ?></td>
+                    <td class="text-right"><span style="font-size:15px;font-weight:700;color:var(--success)">+<?= formatCurrency((float)$r['amount']) ?></span></td>
+                    <td class="text-center">
+                      <div style="display:flex;gap:6px;justify-content:center">
+                        <button class="btn btn-ghost btn-icon" onclick="editIncome(<?= $r['id'] ?>)" data-tooltip="Edit">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="btn btn-ghost btn-icon" style="color:var(--danger)" onclick="deleteRecord('income',<?= $r['id'] ?>)" data-tooltip="Delete">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+              <tfoot>
+                <tr style="background:var(--gray-50)">
+                  <td colspan="4" style="padding:14px 16px;font-weight:700;color:var(--blue)">Total</td>
+                  <td class="text-right" style="padding:14px 16px;font-size:16px;font-weight:800;color:var(--success)"><?= formatCurrency($total) ?></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Income Modal -->
+<div class="modal-backdrop" id="addIncomeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add Income Entry</span>
+      <button class="modal-close" data-close-modal="addIncomeModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <form id="addIncomeForm">
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <input type="text" name="description" class="form-control" placeholder="e.g. Invoice #1234 — Client Name" required>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Amount ($) *</label>
+            <div class="input-group">
+              <span class="input-prefix">$</span>
+              <input type="number" name="amount" class="form-control" placeholder="0.00" step="0.01" min="0" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date *</label>
+            <input type="date" name="income_date" class="form-control" value="<?= date('Y-m-d') ?>" required>
+          </div>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-control">
+              <?php foreach ($categories as $c): ?><option><?= $c ?></option><?php endforeach; ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select name="payment_method" class="form-control">
+              <option value="">— Select —</option>
+              <option>Bank Transfer</option><option>Check</option><option>Cash</option>
+              <option>Credit Card</option><option>PayPal</option><option>Venmo</option><option>Zelle</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tax Year</label>
+          <select name="tax_year" class="form-control">
+            <?php foreach ($years as $y): ?><option <?= $y===$year?'selected':'' ?>><?= $y ?></option><?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" placeholder="Optional notes..." rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="addIncomeModal">Cancel</button>
+      <button class="btn btn-primary" id="saveIncomeBtn" onclick="saveIncome()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+        Save Income
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Income Modal -->
+<div class="modal-backdrop" id="editIncomeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Edit Income Entry</span>
+      <button class="modal-close" data-close-modal="editIncomeModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <form id="editIncomeForm">
+        <input type="hidden" name="id" id="editIncomeId">
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <input type="text" name="description" id="editDescription" class="form-control" required>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Amount ($) *</label>
+            <div class="input-group">
+              <span class="input-prefix">$</span>
+              <input type="number" name="amount" id="editAmount" class="form-control" step="0.01" min="0" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date *</label>
+            <input type="date" name="income_date" id="editDate" class="form-control" required>
+          </div>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select name="category" id="editCategory" class="form-control">
+              <?php foreach ($categories as $c): ?><option><?= $c ?></option><?php endforeach; ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select name="payment_method" id="editPayment" class="form-control">
+              <option value="">— Select —</option>
+              <option>Bank Transfer</option><option>Check</option><option>Cash</option>
+              <option>Credit Card</option><option>PayPal</option><option>Venmo</option><option>Zelle</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" id="editNotes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="editIncomeModal">Cancel</button>
+      <button class="btn btn-primary" onclick="updateIncome()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+        Update
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+<script>
+initTableSearch('tableSearch','incomeTable');
+
+async function saveIncome() {
+  const form = document.getElementById('addIncomeForm');
+  const data = Object.fromEntries(new FormData(form));
+  if (!data.description || !data.amount || !data.income_date) { showAlert('Please fill required fields.','danger'); return; }
+  const btn = document.getElementById('saveIncomeBtn');
+  setLoading(btn, true);
+  const result = await apiCall('/api/income.php', { action:'create', ...data });
+  setLoading(btn, false);
+  if (result.success) { toast('Income added!','success'); setTimeout(()=>location.reload(),700); }
+  else showAlert(result.message,'danger');
+}
+
+async function editIncome(id) {
+  const result = await apiCall('/api/income.php', { action:'get', id });
+  if (result.success) {
+    const r = result.data;
+    document.getElementById('editIncomeId').value = r.id;
+    document.getElementById('editDescription').value = r.description;
+    document.getElementById('editAmount').value = r.amount;
+    document.getElementById('editDate').value = r.income_date;
+    document.getElementById('editCategory').value = r.category;
+    document.getElementById('editPayment').value = r.payment_method || '';
+    document.getElementById('editNotes').value = r.notes || '';
+    openModal('editIncomeModal');
+  }
+}
+
+async function updateIncome() {
+  const form = document.getElementById('editIncomeForm');
+  const data = Object.fromEntries(new FormData(form));
+  const result = await apiCall('/api/income.php', { action:'update', ...data });
+  if (result.success) { toast('Income updated!','success'); setTimeout(()=>location.reload(),700); }
+  else toast(result.message,'danger');
+}
+
+async function deleteRecord(type, id) {
+  if (!confirm('Delete this record? This cannot be undone.')) return;
+  const result = await apiCall('/api/income.php', { action:'delete', id });
+  if (result.success) { toast('Deleted!','success'); setTimeout(()=>location.reload(),600); }
+  else toast(result.message,'danger');
+}
+</script>
+</body>
+</html>
