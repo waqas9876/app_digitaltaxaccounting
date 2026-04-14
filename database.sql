@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `admin_client_notes` (
 -- Password: Admin@123456 (bcrypt)
 -- =============================================
 INSERT INTO `admins` (`name`, `email`, `password`, `role`) VALUES
-('Super Admin', 'admin@digitaltaxaccounting.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin');
+('Super Admin', 'admin@digitaltaxaccounting.com', '$2y$12$iurbw8ooOX5WGNxRQPmHaOr5291zJXJbGWWoyUcRun92/q458xv6O', 'super_admin');
 
 -- =============================================
 -- SEED PLANS
