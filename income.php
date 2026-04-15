@@ -276,7 +276,15 @@ $categories = [
         <div class="grid grid-2">
           <div class="form-group">
             <label class="form-label">Other key documents (optional)</label>
-            <input type="text" name="other_document_label" class="form-control" placeholder="e.g. HMRC letter, contract...">
+            <select name="other_document_label" class="form-control">
+              <option value="">— Select document —</option>
+              <option>Signed 64-8 Form (authorising tax agent)</option>
+              <option>HMRC Digital Authorization Approval</option>
+              <option>Bank statements (business-related income)</option>
+              <option>P60 / P45 form (Employed Individuals)</option>
+              <option>Signed Tax Declaration Form</option>
+              <option>Previous Year tax return</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label">Upload File (PNG / PDF)</label>
@@ -376,7 +384,15 @@ $categories = [
         <div class="grid grid-2">
           <div class="form-group">
             <label class="form-label">Other key documents (optional)</label>
-            <input type="text" name="other_document_label" id="editOtherLabel" class="form-control" placeholder="e.g. HMRC letter, contract...">
+            <select name="other_document_label" id="editOtherLabel" class="form-control">
+              <option value="">— Select document —</option>
+              <option>Signed 64-8 Form (authorising tax agent)</option>
+              <option>HMRC Digital Authorization Approval</option>
+              <option>Bank statements (business-related income)</option>
+              <option>P60 / P45 form (Employed Individuals)</option>
+              <option>Signed Tax Declaration Form</option>
+              <option>Previous Year tax return</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label">Upload File (PNG / PDF)</label>
