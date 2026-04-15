@@ -137,6 +137,7 @@ $categories = [
                   <th>Category</th>
                   <th>Payment Method</th>
                   <th>Tax Year</th>
+                  <th>Document</th>
                   <th>Notes</th>
                   <th class="text-right">Amount</th>
                   <th class="text-center">Actions</th>
@@ -151,6 +152,19 @@ $categories = [
                     <td><span class="badge badge-success"><?= sanitize($r['category']) ?></span></td>
                     <td style="font-size:13px;color:var(--gray-500)"><?= sanitize($r['payment_method'] ?: '—') ?></td>
                     <td style="font-size:13px;color:var(--gray-500)"><?= sanitize($r['tax_year'] ?: '—') ?></td>
+                    <td style="font-size:12px;max-width:160px;">
+                      <?php if ($r['document_type']): ?>
+                        <div style="color:var(--gray-600);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= sanitize($r['document_type']) ?>"><?= sanitize(substr($r['document_type'],0,30)) ?></div>
+                      <?php endif; ?>
+                      <?php if ($r['receipt_file']): ?>
+                        <a href="/assets/uploads/income/<?= sanitize($r['receipt_file']) ?>" target="_blank" style="color:var(--orange);font-weight:600;font-size:11px;">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                          View file
+                        </a>
+                      <?php else: ?>
+                        <span style="color:var(--gray-400)">—</span>
+                      <?php endif; ?>
+                    </td>
                     <td style="font-size:12px;color:var(--gray-400);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= sanitize($r['notes']) ?>"><?= sanitize($r['notes'] ? substr($r['notes'],0,50) : '—') ?></td>
                     <td class="text-right"><span style="font-size:15px;font-weight:700;color:var(--success)">+<?= formatCurrency((float)$r['amount']) ?></span></td>
                     <td class="text-center">
@@ -168,7 +182,7 @@ $categories = [
               </tbody>
               <tfoot>
                 <tr style="background:var(--gray-50)">
-                  <td colspan="7" style="padding:14px 16px;font-weight:700;color:var(--blue)">Total</td>
+                  <td colspan="8" style="padding:14px 16px;font-weight:700;color:var(--blue)">Total</td>
                   <td class="text-right" style="padding:14px 16px;font-size:16px;font-weight:800;color:var(--success)"><?= formatCurrency($total) ?></td>
                   <td></td>
                 </tr>
@@ -240,6 +254,31 @@ $categories = [
           <label class="form-label">🏢 Which company? (optional)</label>
           <input type="text" name="reference" class="form-control" placeholder="e.g. Uber, Bolt, local firm...">
         </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Document Type (optional)</label>
+            <select name="document_type" class="form-control">
+              <option value="">— Select document type —</option>
+              <option>Signed 64-8 Form (authorising tax agent)</option>
+              <option>HMRC Digital Authorization Approval</option>
+              <option>Weekly or monthly income reports/Summary</option>
+              <option>Bank statements (business-related income)</option>
+              <option>Cash job records</option>
+              <option>P60 / P45 form (Employed Individuals)</option>
+              <option>Payslips (Employed Individuals)</option>
+              <option>Rental income</option>
+              <option>Benefits or grants</option>
+              <option>Interest income</option>
+              <option>Side business income</option>
+              <option>Signed Tax Declaration Form</option>
+              <option>Previous Year tax return</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Upload File (PNG / PDF)</label>
+            <input type="file" name="receipt_file" class="form-control" accept=".png,.pdf,image/png,application/pdf">
+          </div>
+        </div>
         <div class="form-group">
           <label class="form-label">Notes</label>
           <textarea name="notes" class="form-control" placeholder="Optional notes..." rows="2"></textarea>
@@ -310,6 +349,32 @@ $categories = [
           <label class="form-label">🏢 Which company? (optional)</label>
           <input type="text" name="reference" id="editReference" class="form-control" placeholder="e.g. Uber, Bolt, local firm...">
         </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Document Type (optional)</label>
+            <select name="document_type" id="editDocumentType" class="form-control">
+              <option value="">— Select document type —</option>
+              <option>Signed 64-8 Form (authorising tax agent)</option>
+              <option>HMRC Digital Authorization Approval</option>
+              <option>Weekly or monthly income reports/Summary</option>
+              <option>Bank statements (business-related income)</option>
+              <option>Cash job records</option>
+              <option>P60 / P45 form (Employed Individuals)</option>
+              <option>Payslips (Employed Individuals)</option>
+              <option>Rental income</option>
+              <option>Benefits or grants</option>
+              <option>Interest income</option>
+              <option>Side business income</option>
+              <option>Signed Tax Declaration Form</option>
+              <option>Previous Year tax return</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Upload File (PNG / PDF)</label>
+            <input type="file" name="receipt_file" id="editFile" class="form-control" accept=".png,.pdf,image/png,application/pdf">
+            <div id="editCurrentFile" style="font-size:12px;color:var(--gray-500);margin-top:4px;"></div>
+          </div>
+        </div>
         <div class="form-group">
           <label class="form-label">Notes</label>
           <textarea name="notes" id="editNotes" class="form-control" rows="2"></textarea>
@@ -332,14 +397,25 @@ initTableSearch('tableSearch','incomeTable');
 
 async function saveIncome() {
   const form = document.getElementById('addIncomeForm');
-  const data = Object.fromEntries(new FormData(form));
-  if (!data.description || !data.amount || !data.income_date) { showAlert('Please fill required fields.','danger'); return; }
+  const fd = new FormData(form);
+  const desc = fd.get('description'), amount = fd.get('amount'), date = fd.get('income_date');
+  if (!desc || !amount || !date) { showAlert('Please fill required fields.','danger'); return; }
+  const file = fd.get('receipt_file');
+  if (file && file.size > 0) {
+    if (!['image/png','application/pdf'].includes(file.type)) { showAlert('Only PNG and PDF files are allowed.','danger'); return; }
+    if (file.size > 5 * 1024 * 1024) { showAlert('File size must be under 5MB.','danger'); return; }
+  }
+  fd.append('action', 'create');
+  fd.append('csrf_token', document.querySelector('meta[name="csrf-token"]').content);
   const btn = document.getElementById('saveIncomeBtn');
   setLoading(btn, true);
-  const result = await apiCall('/api/income.php', { action:'create', ...data });
+  try {
+    const res = await fetch('/api/income.php', { method:'POST', body: fd });
+    const result = await res.json();
+    if (result.success) { toast('Income added!','success'); setTimeout(()=>location.reload(),700); }
+    else showAlert(result.message,'danger');
+  } catch(e) { showAlert('Request failed.','danger'); }
   setLoading(btn, false);
-  if (result.success) { toast('Income added!','success'); setTimeout(()=>location.reload(),700); }
-  else showAlert(result.message,'danger');
 }
 
 async function editIncome(id) {
@@ -353,17 +429,30 @@ async function editIncome(id) {
     document.getElementById('editCategory').value = r.category;
     document.getElementById('editPayment').value = r.payment_method || '';
     document.getElementById('editReference').value = r.reference || '';
+    document.getElementById('editDocumentType').value = r.document_type || '';
     document.getElementById('editNotes').value = r.notes || '';
+    const cf = document.getElementById('editCurrentFile');
+    cf.innerHTML = r.receipt_file ? `Current file: <a href="/assets/uploads/income/${r.receipt_file}" target="_blank" style="color:var(--orange)">${r.receipt_file}</a>` : '';
     openModal('editIncomeModal');
   }
 }
 
 async function updateIncome() {
   const form = document.getElementById('editIncomeForm');
-  const data = Object.fromEntries(new FormData(form));
-  const result = await apiCall('/api/income.php', { action:'update', ...data });
-  if (result.success) { toast('Income updated!','success'); setTimeout(()=>location.reload(),700); }
-  else toast(result.message,'danger');
+  const fd = new FormData(form);
+  const file = fd.get('receipt_file');
+  if (file && file.size > 0) {
+    if (!['image/png','application/pdf'].includes(file.type)) { toast('Only PNG and PDF files are allowed.','danger'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast('File size must be under 5MB.','danger'); return; }
+  }
+  fd.append('action', 'update');
+  fd.append('csrf_token', document.querySelector('meta[name="csrf-token"]').content);
+  try {
+    const res = await fetch('/api/income.php', { method:'POST', body: fd });
+    const result = await res.json();
+    if (result.success) { toast('Income updated!','success'); setTimeout(()=>location.reload(),700); }
+    else toast(result.message,'danger');
+  } catch(e) { toast('Request failed.','danger'); }
 }
 
 async function deleteRecord(type, id) {
