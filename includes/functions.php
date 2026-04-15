@@ -3,7 +3,7 @@
 // HELPER FUNCTIONS
 // =============================================
 
-function formatCurrency(float $amount, string $symbol = '$'): string {
+function formatCurrency(float $amount, string $symbol = '£'): string {
     return $symbol . number_format(abs($amount), 2);
 }
 

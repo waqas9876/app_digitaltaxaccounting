@@ -29,7 +29,20 @@ $records = $stmt->fetchAll();
 $total = array_sum(array_column($records, 'amount'));
 $years = range(date('Y'), date('Y') - 5);
 
-$categories = ['General','Freelance/Contract','Salary/Wages','Business Revenue','Rental','Investment','Bonus','Refund','Other'];
+$categories = [
+    'Employment Income',
+    'Self-Employment / Freelance',
+    'Trading Income',
+    'Property / Rental Income',
+    'Dividends',
+    'Savings & Interest',
+    'Pension Income',
+    'Partnership Income',
+    'Capital Gains',
+    'Grant / Subsidy',
+    'Foreign Income',
+    'Other Income',
+];
 ?>
 
 <div class="app-layout">
@@ -180,9 +193,9 @@ $categories = ['General','Freelance/Contract','Salary/Wages','Business Revenue',
         </div>
         <div class="grid grid-2">
           <div class="form-group">
-            <label class="form-label">Amount ($) *</label>
+            <label class="form-label">Amount (£) *</label>
             <div class="input-group">
-              <span class="input-prefix">$</span>
+              <span class="input-prefix">£</span>
               <input type="number" name="amount" class="form-control" placeholder="0.00" step="0.01" min="0" required>
             </div>
           </div>
@@ -202,8 +215,15 @@ $categories = ['General','Freelance/Contract','Salary/Wages','Business Revenue',
             <label class="form-label">Payment Method</label>
             <select name="payment_method" class="form-control">
               <option value="">— Select —</option>
-              <option>Bank Transfer</option><option>Check</option><option>Cash</option>
-              <option>Credit Card</option><option>PayPal</option><option>Venmo</option><option>Zelle</option><option>Other</option>
+              <option>Bank Transfer (BACS/CHAPS)</option>
+              <option>Faster Payments</option>
+              <option>Cash</option>
+              <option>Cheque</option>
+              <option>Direct Debit</option>
+              <option>Standing Order</option>
+              <option>Credit/Debit Card</option>
+              <option>PayPal</option>
+              <option>Other</option>
             </select>
           </div>
         </div>
@@ -212,6 +232,10 @@ $categories = ['General','Freelance/Contract','Salary/Wages','Business Revenue',
           <select name="tax_year" class="form-control">
             <?php foreach ($years as $y): ?><option <?= $y===$year?'selected':'' ?>><?= $y ?></option><?php endforeach; ?>
           </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🏢 Which company? (optional)</label>
+          <input type="text" name="reference" class="form-control" placeholder="e.g. Uber, Bolt, local firm...">
         </div>
         <div class="form-group">
           <label class="form-label">Notes</label>
@@ -245,9 +269,9 @@ $categories = ['General','Freelance/Contract','Salary/Wages','Business Revenue',
         </div>
         <div class="grid grid-2">
           <div class="form-group">
-            <label class="form-label">Amount ($) *</label>
+            <label class="form-label">Amount (£) *</label>
             <div class="input-group">
-              <span class="input-prefix">$</span>
+              <span class="input-prefix">£</span>
               <input type="number" name="amount" id="editAmount" class="form-control" step="0.01" min="0" required>
             </div>
           </div>
@@ -267,10 +291,21 @@ $categories = ['General','Freelance/Contract','Salary/Wages','Business Revenue',
             <label class="form-label">Payment Method</label>
             <select name="payment_method" id="editPayment" class="form-control">
               <option value="">— Select —</option>
-              <option>Bank Transfer</option><option>Check</option><option>Cash</option>
-              <option>Credit Card</option><option>PayPal</option><option>Venmo</option><option>Zelle</option><option>Other</option>
+              <option>Bank Transfer (BACS/CHAPS)</option>
+              <option>Faster Payments</option>
+              <option>Cash</option>
+              <option>Cheque</option>
+              <option>Direct Debit</option>
+              <option>Standing Order</option>
+              <option>Credit/Debit Card</option>
+              <option>PayPal</option>
+              <option>Other</option>
             </select>
           </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🏢 Which company? (optional)</label>
+          <input type="text" name="reference" id="editReference" class="form-control" placeholder="e.g. Uber, Bolt, local firm...">
         </div>
         <div class="form-group">
           <label class="form-label">Notes</label>
@@ -314,6 +349,7 @@ async function editIncome(id) {
     document.getElementById('editDate').value = r.income_date;
     document.getElementById('editCategory').value = r.category;
     document.getElementById('editPayment').value = r.payment_method || '';
+    document.getElementById('editReference').value = r.reference || '';
     document.getElementById('editNotes').value = r.notes || '';
     openModal('editIncomeModal');
   }

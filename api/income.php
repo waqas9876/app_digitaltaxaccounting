@@ -20,19 +20,20 @@ if (!verifyCsrf($input['csrf_token'] ?? '')) {
 
 switch ($action) {
     case 'create':
-        $desc    = trim($input['description'] ?? '');
-        $amount  = (float)($input['amount'] ?? 0);
-        $date    = $input['income_date'] ?? date('Y-m-d');
-        $cat     = trim($input['category'] ?? 'General');
-        $method  = trim($input['payment_method'] ?? '');
-        $notes   = trim($input['notes'] ?? '');
-        $taxYear = (int)($input['tax_year'] ?? getTaxYear());
+        $desc      = trim($input['description'] ?? '');
+        $amount    = (float)($input['amount'] ?? 0);
+        $date      = $input['income_date'] ?? date('Y-m-d');
+        $cat       = trim($input['category'] ?? 'Employment Income');
+        $method    = trim($input['payment_method'] ?? '');
+        $reference = trim($input['reference'] ?? '');
+        $notes     = trim($input['notes'] ?? '');
+        $taxYear   = (int)($input['tax_year'] ?? getTaxYear());
 
         if (!$desc || $amount <= 0) jsonResponse(['success'=>false,'message'=>'Description and amount are required.']);
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) jsonResponse(['success'=>false,'message'=>'Invalid date.']);
 
-        $stmt = db()->prepare("INSERT INTO income (client_id,description,category,amount,income_date,payment_method,notes,tax_year) VALUES (?,?,?,?,?,?,?,?)");
-        $stmt->execute([$clientId,$desc,$cat,$amount,$date,$method,$notes,$taxYear]);
+        $stmt = db()->prepare("INSERT INTO income (client_id,description,category,amount,income_date,payment_method,reference,notes,tax_year) VALUES (?,?,?,?,?,?,?,?,?)");
+        $stmt->execute([$clientId,$desc,$cat,$amount,$date,$method,$reference,$notes,$taxYear]);
         jsonResponse(['success'=>true,'message'=>'Income added successfully!','id'=>db()->lastInsertId()]);
 
     case 'get':
@@ -44,18 +45,19 @@ switch ($action) {
         jsonResponse(['success'=>true,'data'=>$row]);
 
     case 'update':
-        $id      = (int)($input['id'] ?? 0);
-        $desc    = trim($input['description'] ?? '');
-        $amount  = (float)($input['amount'] ?? 0);
-        $date    = $input['income_date'] ?? '';
-        $cat     = trim($input['category'] ?? 'General');
-        $method  = trim($input['payment_method'] ?? '');
-        $notes   = trim($input['notes'] ?? '');
+        $id        = (int)($input['id'] ?? 0);
+        $desc      = trim($input['description'] ?? '');
+        $amount    = (float)($input['amount'] ?? 0);
+        $date      = $input['income_date'] ?? '';
+        $cat       = trim($input['category'] ?? 'Employment Income');
+        $method    = trim($input['payment_method'] ?? '');
+        $reference = trim($input['reference'] ?? '');
+        $notes     = trim($input['notes'] ?? '');
 
         if (!$desc || $amount <= 0 || !$date) jsonResponse(['success'=>false,'message'=>'Missing required fields.']);
 
-        $stmt = db()->prepare("UPDATE income SET description=?,category=?,amount=?,income_date=?,payment_method=?,notes=? WHERE id=? AND client_id=?");
-        $stmt->execute([$desc,$cat,$amount,$date,$method,$notes,$id,$clientId]);
+        $stmt = db()->prepare("UPDATE income SET description=?,category=?,amount=?,income_date=?,payment_method=?,reference=?,notes=? WHERE id=? AND client_id=?");
+        $stmt->execute([$desc,$cat,$amount,$date,$method,$reference,$notes,$id,$clientId]);
         jsonResponse(['success'=>true,'message'=>'Income updated!']);
 
     case 'delete':
