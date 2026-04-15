@@ -138,6 +138,7 @@ $categories = [
                   <th>Payment Method</th>
                   <th>Tax Year</th>
                   <th>Document</th>
+                  <th>Other Documents</th>
                   <th>Notes</th>
                   <th class="text-right">Amount</th>
                   <th class="text-center">Actions</th>
@@ -165,6 +166,19 @@ $categories = [
                         <span style="color:var(--gray-400)">—</span>
                       <?php endif; ?>
                     </td>
+                    <td style="font-size:12px;max-width:160px;">
+                      <?php if (!empty($r['other_document_label'])): ?>
+                        <div style="color:var(--gray-600);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= sanitize($r['other_document_label']) ?>"><?= sanitize(substr($r['other_document_label'],0,30)) ?></div>
+                      <?php endif; ?>
+                      <?php if (!empty($r['other_document_file'])): ?>
+                        <a href="/assets/uploads/income/<?= sanitize($r['other_document_file']) ?>" target="_blank" style="color:var(--orange);font-weight:600;font-size:11px;">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                          View file
+                        </a>
+                      <?php elseif(empty($r['other_document_label'])): ?>
+                        <span style="color:var(--gray-400)">—</span>
+                      <?php endif; ?>
+                    </td>
                     <td style="font-size:12px;color:var(--gray-400);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= sanitize($r['notes']) ?>"><?= sanitize($r['notes'] ? substr($r['notes'],0,50) : '—') ?></td>
                     <td class="text-right"><span style="font-size:15px;font-weight:700;color:var(--success)">+<?= formatCurrency((float)$r['amount']) ?></span></td>
                     <td class="text-center">
@@ -182,7 +196,7 @@ $categories = [
               </tbody>
               <tfoot>
                 <tr style="background:var(--gray-50)">
-                  <td colspan="8" style="padding:14px 16px;font-weight:700;color:var(--blue)">Total</td>
+                  <td colspan="9" style="padding:14px 16px;font-weight:700;color:var(--blue)">Total</td>
                   <td class="text-right" style="padding:14px 16px;font-size:16px;font-weight:800;color:var(--success)"><?= formatCurrency($total) ?></td>
                   <td></td>
                 </tr>
