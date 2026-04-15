@@ -133,8 +133,11 @@ $categories = [
                 <tr>
                   <th>Date</th>
                   <th>Description</th>
+                  <th>Company</th>
                   <th>Category</th>
                   <th>Payment Method</th>
+                  <th>Tax Year</th>
+                  <th>Notes</th>
                   <th class="text-right">Amount</th>
                   <th class="text-center">Actions</th>
                 </tr>
@@ -143,12 +146,12 @@ $categories = [
                 <?php foreach ($records as $r): ?>
                   <tr>
                     <td style="white-space:nowrap;color:var(--gray-500);font-size:13px"><?= formatDate($r['income_date']) ?></td>
-                    <td>
-                      <div style="font-weight:600;color:var(--blue)"><?= sanitize($r['description']) ?></div>
-                      <?php if ($r['notes']): ?><div style="font-size:12px;color:var(--gray-400)"><?= sanitize(substr($r['notes'],0,60)) ?></div><?php endif; ?>
-                    </td>
+                    <td><div style="font-weight:600;color:var(--blue)"><?= sanitize($r['description']) ?></div></td>
+                    <td style="font-size:13px;color:var(--gray-600)"><?= sanitize($r['reference'] ?: '—') ?></td>
                     <td><span class="badge badge-success"><?= sanitize($r['category']) ?></span></td>
                     <td style="font-size:13px;color:var(--gray-500)"><?= sanitize($r['payment_method'] ?: '—') ?></td>
+                    <td style="font-size:13px;color:var(--gray-500)"><?= sanitize($r['tax_year'] ?: '—') ?></td>
+                    <td style="font-size:12px;color:var(--gray-400);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= sanitize($r['notes']) ?>"><?= sanitize($r['notes'] ? substr($r['notes'],0,50) : '—') ?></td>
                     <td class="text-right"><span style="font-size:15px;font-weight:700;color:var(--success)">+<?= formatCurrency((float)$r['amount']) ?></span></td>
                     <td class="text-center">
                       <div style="display:flex;gap:6px;justify-content:center">
@@ -165,7 +168,7 @@ $categories = [
               </tbody>
               <tfoot>
                 <tr style="background:var(--gray-50)">
-                  <td colspan="4" style="padding:14px 16px;font-weight:700;color:var(--blue)">Total</td>
+                  <td colspan="7" style="padding:14px 16px;font-weight:700;color:var(--blue)">Total</td>
                   <td class="text-right" style="padding:14px 16px;font-size:16px;font-weight:800;color:var(--success)"><?= formatCurrency($total) ?></td>
                   <td></td>
                 </tr>
