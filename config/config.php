@@ -13,7 +13,7 @@ define('COLOR_DARK', '#16295A');
 define('COLOR_WHITE', '#FFFFFF');
 
 // Session
-define('SESSION_LIFETIME', 7200); // 2 hours
+define('SESSION_LIFETIME', 86400); // 24 hours
 define('REMEMBER_LIFETIME', 2592000); // 30 days
 
 // Upload settings
