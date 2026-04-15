@@ -26,7 +26,7 @@ if (!verifyCsrf($input['csrf_token'] ?? '')) {
     jsonResponse(['success'=>false,'message'=>'Invalid CSRF token.'],403);
 }
 
-function uploadFile(string $field): ?string {
+function uploadIncomeFile(string $field): ?string {
     if (empty($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) return null;
     $file = $_FILES[$field];
     if ($file['error'] !== UPLOAD_ERR_OK) jsonResponse(['success'=>false,'message'=>'File upload error.']);
@@ -42,7 +42,7 @@ function uploadFile(string $field): ?string {
     return $filename;
 }
 
-function deleteFile(?string $filename): void {
+function deleteIncomeFile(?string $filename): void {
     if (!$filename) return;
     $path = __DIR__ . '/../assets/uploads/income/' . $filename;
     if (file_exists($path)) unlink($path);
@@ -81,8 +81,8 @@ try {
             if (!$desc || $amount <= 0) jsonResponse(['success'=>false,'message'=>'Description and amount are required.']);
             if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) jsonResponse(['success'=>false,'message'=>'Invalid date.']);
 
-            $receiptFile  = uploadFile('receipt_file');
-            $otherDocFile = uploadFile('other_document_file');
+            $receiptFile  = uploadIncomeFile('receipt_file');
+            $otherDocFile = uploadIncomeFile('other_document_file');
 
             $stmt = db()->prepare("INSERT INTO income (client_id,description,category,amount,income_date,payment_method,reference,document_type,receipt_file,other_document_label,other_document_file,notes,tax_year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             $stmt->execute([$clientId,$desc,$cat,$amount,$date,$method,$reference,$documentType,$receiptFile,$otherDocLabel,$otherDocFile,$notes,$taxYear]);
@@ -110,15 +110,15 @@ try {
 
             if (!$desc || $amount <= 0 || !$date) jsonResponse(['success'=>false,'message'=>'Missing required fields.']);
 
-            $newReceipt  = uploadFile('receipt_file');
-            $newOtherDoc = uploadFile('other_document_file');
+            $newReceipt  = uploadIncomeFile('receipt_file');
+            $newOtherDoc = uploadIncomeFile('other_document_file');
 
             $existing = db()->prepare("SELECT receipt_file, other_document_file FROM income WHERE id=? AND client_id=?");
             $existing->execute([$id,$clientId]);
             $old = $existing->fetch();
 
-            if ($newReceipt  && $old) deleteFile($old['receipt_file']);
-            if ($newOtherDoc && $old) deleteFile($old['other_document_file']);
+            if ($newReceipt  && $old) deleteIncomeFile($old['receipt_file']);
+            if ($newOtherDoc && $old) deleteIncomeFile($old['other_document_file']);
 
             $receiptFile  = $newReceipt  ?: ($old['receipt_file']       ?? null);
             $otherDocFile = $newOtherDoc ?: ($old['other_document_file'] ?? null);
@@ -132,7 +132,7 @@ try {
             $stmt = db()->prepare("SELECT receipt_file, other_document_file FROM income WHERE id=? AND client_id=?");
             $stmt->execute([$id,$clientId]);
             $row = $stmt->fetch();
-            if ($row) { deleteFile($row['receipt_file']); deleteFile($row['other_document_file']); }
+            if ($row) { deleteIncomeFile($row['receipt_file']); deleteIncomeFile($row['other_document_file']); }
             $stmt = db()->prepare("DELETE FROM income WHERE id=? AND client_id=?");
             $stmt->execute([$id,$clientId]);
             if ($stmt->rowCount() === 0) jsonResponse(['success'=>false,'message'=>'Record not found.'],404);
