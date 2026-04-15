@@ -24,7 +24,7 @@ $navItems = [
   <div class="sidebar-header">
     <div class="sidebar-logo">
       <div class="logo-icon">
-        <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#FF7421"/><path d="M12 28L20 12L28 28H12Z" fill="#fff" opacity=".9"/><path d="M15 24h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        <img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:40px;height:40px;object-fit:contain;">
       </div>
       <div class="logo-text">
         <span class="logo-name">Digital Tax</span>

@@ -43,12 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="auth-brand">
       <div class="brand-logo">
         <div class="brand-logo-icon">
-          <svg viewBox="0 0 56 56" fill="none">
-            <circle cx="28" cy="28" r="28" fill="#FF7421"/>
-            <path d="M16 40L28 16L40 40H16Z" fill="#fff" opacity=".9"/>
-            <path d="M20 34h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="28" cy="28" r="4" fill="rgba(22,41,90,.3)"/>
-          </svg>
+          <img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:56px;height:56px;object-fit:contain;">
         </div>
         <div class="brand-logo-text">
           <span class="name">Digital Tax</span>
@@ -146,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <button type="submit" class="auth-submit" id="loginBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
             Sign In
           </button>
         </form>

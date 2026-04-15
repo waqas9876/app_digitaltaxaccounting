@@ -51,11 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="auth-brand">
       <div class="brand-logo">
         <div class="brand-logo-icon">
-          <svg viewBox="0 0 56 56" fill="none">
-            <circle cx="28" cy="28" r="28" fill="#FF7421"/>
-            <path d="M16 40L28 16L40 40H16Z" fill="#fff" opacity=".9"/>
-            <path d="M20 34h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
+          <img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:56px;height:56px;object-fit:contain;">
         </div>
         <div class="brand-logo-text">
           <span class="name">Digital Tax</span>

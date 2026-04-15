@@ -43,11 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="auth-card" style="max-width:420px">
       <div style="text-align:center;margin-bottom:28px">
         <div style="width:56px;height:56px;margin:0 auto 14px">
-          <svg viewBox="0 0 56 56" fill="none">
-            <circle cx="28" cy="28" r="28" fill="#FF7421"/>
-            <path d="M16 40L28 16L40 40H16Z" fill="#fff" opacity=".9"/>
-            <path d="M20 34h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
+          <img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:56px;height:56px;object-fit:contain;">
         </div>
         <div class="admin-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

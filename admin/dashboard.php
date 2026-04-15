@@ -45,7 +45,7 @@ for ($m=1;$m<=12;$m++) {
   <aside class="sidebar admin-sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">
-        <div class="logo-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#FF7421"/><path d="M12 28L20 12L28 28H12Z" fill="#fff" opacity=".9"/></svg></div>
+        <div class="logo-icon"><img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:40px;height:40px;object-fit:contain;"></div>
         <div class="logo-text"><span class="logo-name">Admin Panel</span><span class="logo-sub">Digital Tax</span></div>
       </div>
       <button class="sidebar-close" id="sidebarClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
