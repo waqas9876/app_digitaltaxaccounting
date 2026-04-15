@@ -48,80 +48,99 @@ function deleteFile(?string $filename): void {
     if (file_exists($path)) unlink($path);
 }
 
-switch ($action) {
-    case 'create':
-        $desc              = trim($input['description'] ?? '');
-        $amount            = (float)($input['amount'] ?? 0);
-        $date              = $input['income_date'] ?? date('Y-m-d');
-        $cat               = trim($input['category'] ?? 'Employment Income');
-        $method            = trim($input['payment_method'] ?? '');
-        $reference         = trim($input['reference'] ?? '');
-        $documentType      = trim($input['document_type'] ?? '');
-        $otherDocLabel     = trim($input['other_document_label'] ?? '');
-        $notes             = trim($input['notes'] ?? '');
-        $taxYear           = (int)($input['tax_year'] ?? getTaxYear());
+// Auto-add missing columns if they don't exist
+function ensureColumns(): void {
+    $cols = db()->query("SHOW COLUMNS FROM income")->fetchAll(PDO::FETCH_COLUMN);
+    $needed = [
+        'document_type'       => "ALTER TABLE income ADD COLUMN document_type VARCHAR(200) DEFAULT NULL AFTER receipt_file",
+        'other_document_label'=> "ALTER TABLE income ADD COLUMN other_document_label VARCHAR(200) DEFAULT NULL AFTER document_type",
+        'other_document_file' => "ALTER TABLE income ADD COLUMN other_document_file VARCHAR(255) DEFAULT NULL AFTER other_document_label",
+        'reference'           => "ALTER TABLE income ADD COLUMN reference VARCHAR(200) DEFAULT NULL AFTER payment_method",
+    ];
+    foreach ($needed as $col => $sql) {
+        if (!in_array($col, $cols)) db()->exec($sql);
+    }
+}
 
-        if (!$desc || $amount <= 0) jsonResponse(['success'=>false,'message'=>'Description and amount are required.']);
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) jsonResponse(['success'=>false,'message'=>'Invalid date.']);
+try {
+    ensureColumns();
 
-        $receiptFile      = uploadFile('receipt_file');
-        $otherDocFile     = uploadFile('other_document_file');
+    switch ($action) {
+        case 'create':
+            $desc          = trim($input['description'] ?? '');
+            $amount        = (float)($input['amount'] ?? 0);
+            $date          = $input['income_date'] ?? date('Y-m-d');
+            $cat           = trim($input['category'] ?? 'Employment Income');
+            $method        = trim($input['payment_method'] ?? '');
+            $reference     = trim($input['reference'] ?? '');
+            $documentType  = trim($input['document_type'] ?? '');
+            $otherDocLabel = trim($input['other_document_label'] ?? '');
+            $notes         = trim($input['notes'] ?? '');
+            $taxYear       = (int)($input['tax_year'] ?? getTaxYear());
 
-        $stmt = db()->prepare("INSERT INTO income (client_id,description,category,amount,income_date,payment_method,reference,document_type,receipt_file,other_document_label,other_document_file,notes,tax_year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
-        $stmt->execute([$clientId,$desc,$cat,$amount,$date,$method,$reference,$documentType,$receiptFile,$otherDocLabel,$otherDocFile,$notes,$taxYear]);
-        jsonResponse(['success'=>true,'message'=>'Income added successfully!','id'=>db()->lastInsertId()]);
+            if (!$desc || $amount <= 0) jsonResponse(['success'=>false,'message'=>'Description and amount are required.']);
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) jsonResponse(['success'=>false,'message'=>'Invalid date.']);
 
-    case 'get':
-        $id   = (int)($input['id'] ?? 0);
-        $stmt = db()->prepare("SELECT * FROM income WHERE id=? AND client_id=?");
-        $stmt->execute([$id,$clientId]);
-        $row  = $stmt->fetch();
-        if (!$row) jsonResponse(['success'=>false,'message'=>'Record not found.'],404);
-        jsonResponse(['success'=>true,'data'=>$row]);
+            $receiptFile  = uploadFile('receipt_file');
+            $otherDocFile = uploadFile('other_document_file');
 
-    case 'update':
-        $id                = (int)($input['id'] ?? 0);
-        $desc              = trim($input['description'] ?? '');
-        $amount            = (float)($input['amount'] ?? 0);
-        $date              = $input['income_date'] ?? '';
-        $cat               = trim($input['category'] ?? 'Employment Income');
-        $method            = trim($input['payment_method'] ?? '');
-        $reference         = trim($input['reference'] ?? '');
-        $documentType      = trim($input['document_type'] ?? '');
-        $otherDocLabel     = trim($input['other_document_label'] ?? '');
-        $notes             = trim($input['notes'] ?? '');
+            $stmt = db()->prepare("INSERT INTO income (client_id,description,category,amount,income_date,payment_method,reference,document_type,receipt_file,other_document_label,other_document_file,notes,tax_year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            $stmt->execute([$clientId,$desc,$cat,$amount,$date,$method,$reference,$documentType,$receiptFile,$otherDocLabel,$otherDocFile,$notes,$taxYear]);
+            jsonResponse(['success'=>true,'message'=>'Income added successfully!','id'=>db()->lastInsertId()]);
 
-        if (!$desc || $amount <= 0 || !$date) jsonResponse(['success'=>false,'message'=>'Missing required fields.']);
+        case 'get':
+            $id   = (int)($input['id'] ?? 0);
+            $stmt = db()->prepare("SELECT * FROM income WHERE id=? AND client_id=?");
+            $stmt->execute([$id,$clientId]);
+            $row  = $stmt->fetch();
+            if (!$row) jsonResponse(['success'=>false,'message'=>'Record not found.'],404);
+            jsonResponse(['success'=>true,'data'=>$row]);
 
-        $newReceipt   = uploadFile('receipt_file');
-        $newOtherDoc  = uploadFile('other_document_file');
+        case 'update':
+            $id            = (int)($input['id'] ?? 0);
+            $desc          = trim($input['description'] ?? '');
+            $amount        = (float)($input['amount'] ?? 0);
+            $date          = $input['income_date'] ?? '';
+            $cat           = trim($input['category'] ?? 'Employment Income');
+            $method        = trim($input['payment_method'] ?? '');
+            $reference     = trim($input['reference'] ?? '');
+            $documentType  = trim($input['document_type'] ?? '');
+            $otherDocLabel = trim($input['other_document_label'] ?? '');
+            $notes         = trim($input['notes'] ?? '');
 
-        // Fetch existing files to delete if replaced
-        $existing = db()->prepare("SELECT receipt_file, other_document_file FROM income WHERE id=? AND client_id=?");
-        $existing->execute([$id,$clientId]);
-        $old = $existing->fetch();
+            if (!$desc || $amount <= 0 || !$date) jsonResponse(['success'=>false,'message'=>'Missing required fields.']);
 
-        if ($newReceipt && $old) deleteFile($old['receipt_file']);
-        if ($newOtherDoc && $old) deleteFile($old['other_document_file']);
+            $newReceipt  = uploadFile('receipt_file');
+            $newOtherDoc = uploadFile('other_document_file');
 
-        $receiptFile  = $newReceipt  ?: ($old['receipt_file']      ?? null);
-        $otherDocFile = $newOtherDoc ?: ($old['other_document_file'] ?? null);
+            $existing = db()->prepare("SELECT receipt_file, other_document_file FROM income WHERE id=? AND client_id=?");
+            $existing->execute([$id,$clientId]);
+            $old = $existing->fetch();
 
-        $stmt = db()->prepare("UPDATE income SET description=?,category=?,amount=?,income_date=?,payment_method=?,reference=?,document_type=?,receipt_file=?,other_document_label=?,other_document_file=?,notes=? WHERE id=? AND client_id=?");
-        $stmt->execute([$desc,$cat,$amount,$date,$method,$reference,$documentType,$receiptFile,$otherDocLabel,$otherDocFile,$notes,$id,$clientId]);
-        jsonResponse(['success'=>true,'message'=>'Income updated!']);
+            if ($newReceipt  && $old) deleteFile($old['receipt_file']);
+            if ($newOtherDoc && $old) deleteFile($old['other_document_file']);
 
-    case 'delete':
-        $id   = (int)($input['id'] ?? 0);
-        $stmt = db()->prepare("SELECT receipt_file, other_document_file FROM income WHERE id=? AND client_id=?");
-        $stmt->execute([$id,$clientId]);
-        $row = $stmt->fetch();
-        if ($row) { deleteFile($row['receipt_file']); deleteFile($row['other_document_file']); }
-        $stmt = db()->prepare("DELETE FROM income WHERE id=? AND client_id=?");
-        $stmt->execute([$id,$clientId]);
-        if ($stmt->rowCount() === 0) jsonResponse(['success'=>false,'message'=>'Record not found.'],404);
-        jsonResponse(['success'=>true,'message'=>'Income deleted.']);
+            $receiptFile  = $newReceipt  ?: ($old['receipt_file']       ?? null);
+            $otherDocFile = $newOtherDoc ?: ($old['other_document_file'] ?? null);
 
-    default:
-        jsonResponse(['success'=>false,'message'=>'Invalid action.'],400);
+            $stmt = db()->prepare("UPDATE income SET description=?,category=?,amount=?,income_date=?,payment_method=?,reference=?,document_type=?,receipt_file=?,other_document_label=?,other_document_file=?,notes=? WHERE id=? AND client_id=?");
+            $stmt->execute([$desc,$cat,$amount,$date,$method,$reference,$documentType,$receiptFile,$otherDocLabel,$otherDocFile,$notes,$id,$clientId]);
+            jsonResponse(['success'=>true,'message'=>'Income updated!']);
+
+        case 'delete':
+            $id   = (int)($input['id'] ?? 0);
+            $stmt = db()->prepare("SELECT receipt_file, other_document_file FROM income WHERE id=? AND client_id=?");
+            $stmt->execute([$id,$clientId]);
+            $row = $stmt->fetch();
+            if ($row) { deleteFile($row['receipt_file']); deleteFile($row['other_document_file']); }
+            $stmt = db()->prepare("DELETE FROM income WHERE id=? AND client_id=?");
+            $stmt->execute([$id,$clientId]);
+            if ($stmt->rowCount() === 0) jsonResponse(['success'=>false,'message'=>'Record not found.'],404);
+            jsonResponse(['success'=>true,'message'=>'Income deleted.']);
+
+        default:
+            jsonResponse(['success'=>false,'message'=>'Invalid action.'],400);
+    }
+} catch (Throwable $e) {
+    jsonResponse(['success'=>false,'message'=>'Server error: ' . $e->getMessage()]);
 }
