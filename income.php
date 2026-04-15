@@ -259,24 +259,28 @@ $categories = [
             <label class="form-label">Document Type (optional)</label>
             <select name="document_type" class="form-control">
               <option value="">— Select document type —</option>
-              <option>Signed 64-8 Form (authorising tax agent)</option>
-              <option>HMRC Digital Authorization Approval</option>
               <option>Weekly or monthly income reports/Summary</option>
-              <option>Bank statements (business-related income)</option>
               <option>Cash job records</option>
-              <option>P60 / P45 form (Employed Individuals)</option>
               <option>Payslips (Employed Individuals)</option>
               <option>Rental income</option>
               <option>Benefits or grants</option>
               <option>Interest income</option>
               <option>Side business income</option>
-              <option>Signed Tax Declaration Form</option>
-              <option>Previous Year tax return</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Upload File (PNG / PDF)</label>
             <input type="file" name="receipt_file" class="form-control" accept=".png,.pdf,image/png,application/pdf">
+          </div>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Other key documents (optional)</label>
+            <input type="text" name="other_document_label" class="form-control" placeholder="e.g. HMRC letter, contract...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Upload File (PNG / PDF)</label>
+            <input type="file" name="other_document_file" class="form-control" accept=".png,.pdf,image/png,application/pdf">
           </div>
         </div>
         <div class="form-group">
@@ -354,25 +358,30 @@ $categories = [
             <label class="form-label">Document Type (optional)</label>
             <select name="document_type" id="editDocumentType" class="form-control">
               <option value="">— Select document type —</option>
-              <option>Signed 64-8 Form (authorising tax agent)</option>
-              <option>HMRC Digital Authorization Approval</option>
               <option>Weekly or monthly income reports/Summary</option>
-              <option>Bank statements (business-related income)</option>
               <option>Cash job records</option>
-              <option>P60 / P45 form (Employed Individuals)</option>
               <option>Payslips (Employed Individuals)</option>
               <option>Rental income</option>
               <option>Benefits or grants</option>
               <option>Interest income</option>
               <option>Side business income</option>
-              <option>Signed Tax Declaration Form</option>
-              <option>Previous Year tax return</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Upload File (PNG / PDF)</label>
             <input type="file" name="receipt_file" id="editFile" class="form-control" accept=".png,.pdf,image/png,application/pdf">
             <div id="editCurrentFile" style="font-size:12px;color:var(--gray-500);margin-top:4px;"></div>
+          </div>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Other key documents (optional)</label>
+            <input type="text" name="other_document_label" id="editOtherLabel" class="form-control" placeholder="e.g. HMRC letter, contract...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Upload File (PNG / PDF)</label>
+            <input type="file" name="other_document_file" id="editOtherFile" class="form-control" accept=".png,.pdf,image/png,application/pdf">
+            <div id="editCurrentOtherFile" style="font-size:12px;color:var(--gray-500);margin-top:4px;"></div>
           </div>
         </div>
         <div class="form-group">
@@ -430,9 +439,12 @@ async function editIncome(id) {
     document.getElementById('editPayment').value = r.payment_method || '';
     document.getElementById('editReference').value = r.reference || '';
     document.getElementById('editDocumentType').value = r.document_type || '';
+    document.getElementById('editOtherLabel').value = r.other_document_label || '';
     document.getElementById('editNotes').value = r.notes || '';
     const cf = document.getElementById('editCurrentFile');
-    cf.innerHTML = r.receipt_file ? `Current file: <a href="/assets/uploads/income/${r.receipt_file}" target="_blank" style="color:var(--orange)">${r.receipt_file}</a>` : '';
+    cf.innerHTML = r.receipt_file ? `Current: <a href="/assets/uploads/income/${r.receipt_file}" target="_blank" style="color:var(--orange)">View file</a>` : '';
+    const ocf = document.getElementById('editCurrentOtherFile');
+    ocf.innerHTML = r.other_document_file ? `Current: <a href="/assets/uploads/income/${r.other_document_file}" target="_blank" style="color:var(--orange)">View file</a>` : '';
     openModal('editIncomeModal');
   }
 }
