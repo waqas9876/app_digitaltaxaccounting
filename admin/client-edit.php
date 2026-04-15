@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf($_POST['csrf_token'] ?? 
   <aside class="sidebar admin-sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">
-        <div class="logo-icon"><img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:50px;height:50px;object-fit:contain;"></div>
+        <div class="logo-icon"><img src="/assets/images/logo.png" alt="Digital Tax Accounting" ></div>
       </div>
       <button class="sidebar-close" id="sidebarClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     </div>

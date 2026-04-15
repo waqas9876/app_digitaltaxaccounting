@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="auth-brand">
       <div class="brand-logo">
         <div class="brand-logo-icon">
-          <img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:80px;height:80px;object-fit:contain;">
+          <img src="/assets/images/logo.png" alt="Digital Tax Accounting">
         </div>
       </div>
 

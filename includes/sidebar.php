@@ -24,7 +24,7 @@ $navItems = [
   <div class="sidebar-header">
     <div class="sidebar-logo">
       <div class="logo-icon">
-        <img src="/assets/images/logo.png" alt="Digital Tax Accounting" style="width:50px;height:50px;object-fit:contain;">
+        <img src="/assets/images/logo.png" alt="Digital Tax Accounting">
       </div>
     </div>
     <button class="sidebar-close" id="sidebarClose">
