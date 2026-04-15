@@ -266,6 +266,7 @@ $categories = [
               <option>Benefits or grants</option>
               <option>Interest income</option>
               <option>Side business income</option>
+              <option>Other Documents</option>
             </select>
           </div>
           <div class="form-group">
@@ -284,6 +285,7 @@ $categories = [
               <option>P60 / P45 form (Employed Individuals)</option>
               <option>Signed Tax Declaration Form</option>
               <option>Previous Year tax return</option>
+              <option>Other Documents</option>
             </select>
           </div>
           <div class="form-group">
@@ -373,6 +375,7 @@ $categories = [
               <option>Benefits or grants</option>
               <option>Interest income</option>
               <option>Side business income</option>
+              <option>Other Documents</option>
             </select>
           </div>
           <div class="form-group">
@@ -392,6 +395,7 @@ $categories = [
               <option>P60 / P45 form (Employed Individuals)</option>
               <option>Signed Tax Declaration Form</option>
               <option>Previous Year tax return</option>
+              <option>Other Documents</option>
             </select>
           </div>
           <div class="form-group">
