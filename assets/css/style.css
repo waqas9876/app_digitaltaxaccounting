@@ -437,6 +437,44 @@ input, textarea, select { font-family: inherit; }
   color: var(--blue);
 }
 
+/* --- TABLE SEARCH BAR --- */
+.table-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gray-50);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 0 12px;
+  width: clamp(180px, 25vw, 280px);
+  transition: border-color .2s, box-shadow .2s;
+}
+.table-search:focus-within {
+  border-color: var(--orange);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(255,116,33,.1);
+}
+.table-search svg {
+  width: 15px;
+  height: 15px;
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+.table-search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--gray-700);
+  outline: none;
+  min-width: 0;
+}
+.table-search input::placeholder { color: var(--gray-400); }
+@media (max-width: 640px) {
+  .table-search { width: 100%; }
+}
+
 .card-body { padding: 20px 24px; }
 
 .card-footer {
