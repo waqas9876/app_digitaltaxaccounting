@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="brand-stats">
         <div class="brand-stat"><span class="num">500+</span><span class="lbl">Clients</span></div>
-        <div class="brand-stat"><span class="num">$2M+</span><span class="lbl">Tax Savings</span></div>
+        <div class="brand-stat"><span class="num">£2M+</span><span class="lbl">Tax Savings</span></div>
         <div class="brand-stat"><span class="num">99%</span><span class="lbl">Accuracy</span></div>
       </div>
     </div>
@@ -88,6 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="auth-form-panel">
       <div class="auth-card">
         <div class="auth-card-header">
+          <div style="text-align:center;margin-bottom:20px">
+            <img src="/assets/images/logo-full.png" alt="Digital Tax Accounting" style="width:220px;max-width:100%;height:auto;object-fit:contain;">
+          </div>
           <h2>Welcome Back</h2>
           <p>Sign in to access your client portal</p>
         </div>

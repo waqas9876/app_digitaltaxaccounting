@@ -140,11 +140,11 @@ $statusLabels = [
             <div style="color:rgba(255,255,255,.6);font-size:13px;margin-bottom:16px">Based on your income, expenses and mileage records</div>
             <?php
             $autoCalc = [
-              ['Gross Income','$'.number_format($stats['income'],2),'#4ade80'],
-              ['Total Expenses','$'.number_format($stats['expenses'],2),'#f87171'],
-              ['Mileage Deduction','$'.number_format($stats['mile_deduction'],2),'#fb923c'],
-              ['Net Profit/Loss',($stats['profit']<0?'-':'').'$'.number_format(abs($stats['profit']),2),$stats['profit']>=0?'#4ade80':'#f87171'],
-              ['Est. Tax (25%)','$'.number_format(max(0,$stats['profit']*.25),2),'#fbbf24'],
+              ['Gross Income','£'.number_format($stats['income'],2),'#4ade80'],
+              ['Total Expenses','£'.number_format($stats['expenses'],2),'#f87171'],
+              ['Mileage Deduction','£'.number_format($stats['mile_deduction'],2),'#fb923c'],
+              ['Net Profit/Loss',($stats['profit']<0?'-':'').'£'.number_format(abs($stats['profit']),2),$stats['profit']>=0?'#4ade80':'#f87171'],
+              ['Est. Tax (25%)','£'.number_format(max(0,$stats['profit']*.25),2),'#fbbf24'],
             ];
             foreach ($autoCalc as [$label, $value, $color]):
             ?>
@@ -259,42 +259,42 @@ $statusLabels = [
         </div>
         <div class="grid grid-2">
           <div class="form-group">
-            <label class="form-label">Gross Income ($)</label>
-            <div class="input-group"><span class="input-prefix">$</span>
+            <label class="form-label">Gross Income (£)</label>
+            <div class="input-group"><span class="input-prefix">£</span>
               <input type="number" name="gross_income" class="form-control" step="0.01" value="<?= $taxRecord['gross_income'] ?? number_format($stats['income'],2,'.','') ?>">
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Total Deductions ($)</label>
-            <div class="input-group"><span class="input-prefix">$</span>
+            <label class="form-label">Total Deductions (£)</label>
+            <div class="input-group"><span class="input-prefix">£</span>
               <input type="number" name="total_deductions" class="form-control" step="0.01" value="<?= $taxRecord['total_deductions'] ?? number_format($stats['expenses']+$stats['mile_deduction'],2,'.','') ?>">
             </div>
           </div>
         </div>
         <div class="grid grid-2">
           <div class="form-group">
-            <label class="form-label">Taxable Income ($)</label>
-            <div class="input-group"><span class="input-prefix">$</span>
+            <label class="form-label">Taxable Income (£)</label>
+            <div class="input-group"><span class="input-prefix">£</span>
               <input type="number" name="taxable_income" class="form-control" step="0.01" value="<?= $taxRecord['taxable_income'] ?? max(0,number_format($stats['profit'],2,'.','')) ?>">
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Estimated Tax ($)</label>
-            <div class="input-group"><span class="input-prefix">$</span>
+            <label class="form-label">Estimated Tax (£)</label>
+            <div class="input-group"><span class="input-prefix">£</span>
               <input type="number" name="estimated_tax" class="form-control" step="0.01" value="<?= $taxRecord['estimated_tax'] ?? number_format(max(0,$stats['profit']*.25),2,'.','') ?>">
             </div>
           </div>
         </div>
         <div class="grid grid-2">
           <div class="form-group">
-            <label class="form-label">Tax Already Paid ($)</label>
-            <div class="input-group"><span class="input-prefix">$</span>
+            <label class="form-label">Tax Already Paid (£)</label>
+            <div class="input-group"><span class="input-prefix">£</span>
               <input type="number" name="tax_paid" class="form-control" step="0.01" value="<?= $taxRecord['tax_paid'] ?? '0.00' ?>">
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Refund / Amount Owed ($)</label>
-            <div class="input-group"><span class="input-prefix">$</span>
+            <label class="form-label">Refund / Amount Owed (£)</label>
+            <div class="input-group"><span class="input-prefix">£</span>
               <input type="number" name="refund_owed" class="form-control" step="0.01" value="<?= $taxRecord['refund_owed'] ?? '0.00' ?>">
             </div>
           </div>

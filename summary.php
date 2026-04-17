@@ -222,7 +222,7 @@ new Chart(document.getElementById('monthlyChart'), {
   },
   options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8}}},
-    scales:{y:{beginAtZero:true,ticks:{callback:v=>'$'+v.toLocaleString()}},x:{grid:{display:false}}}
+    scales:{y:{beginAtZero:true,ticks:{callback:v=>'£'+v.toLocaleString()}},x:{grid:{display:false}}}
   }
 });
 

@@ -277,7 +277,7 @@ new Chart(document.getElementById('clientChart'),{
       {label:'Expenses',data:monthly.map(m=>m.expenses),backgroundColor:'rgba(239,68,68,.7)',borderRadius:5}
     ]
   },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'$'+v.toLocaleString()}},x:{grid:{display:false}}}}
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'£'+v.toLocaleString()}},x:{grid:{display:false}}}}
 });
 
 async function saveAdminNote() {

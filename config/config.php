@@ -21,11 +21,11 @@ define('UPLOAD_DIR', __DIR__ . '/../assets/uploads/');
 define('UPLOAD_MAX_SIZE', 5 * 1024 * 1024); // 5MB
 define('ALLOWED_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'application/pdf']);
 
-// Tax rate (IRS standard mileage rate 2024)
+// Tax rate (HMRC standard mileage rate)
 define('STANDARD_MILEAGE_RATE', 0.67);
 
 // Timezone
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('Europe/London');
 
 // Error reporting (set to 0 in production)
 error_reporting(E_ALL);

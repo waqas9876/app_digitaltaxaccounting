@@ -182,8 +182,8 @@ $categories = ['General','Office Supplies','Software/Subscriptions','Marketing &
         </div>
         <div class="grid grid-2">
           <div class="form-group">
-            <label class="form-label">Amount ($) *</label>
-            <div class="input-group"><span class="input-prefix">$</span>
+            <label class="form-label">Amount (£) *</label>
+            <div class="input-group"><span class="input-prefix">£</span>
               <input type="number" name="amount" class="form-control" placeholder="0.00" step="0.01" min="0" required>
             </div>
           </div>

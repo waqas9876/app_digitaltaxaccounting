@@ -41,7 +41,7 @@ $years       = range(date('Y'), date('Y') - 5);
       </button>
       <div class="header-title">
         <h1>Mileage Tracker</h1>
-        <p>IRS standard rate: $<?= number_format($rate, 4) ?>/mile for <?= $year ?></p>
+        <p>HMRC standard rate: £<?= number_format($rate, 4) ?>/mile for <?= $year ?></p>
       </div>
       <div class="header-actions">
         <select class="form-control" id="yearSelector" style="width:auto;padding:8px 32px 8px 12px;font-size:13px;font-weight:600;">
@@ -80,7 +80,7 @@ $years       = range(date('Y'), date('Y') - 5);
           <div class="stat-content">
             <div class="stat-label">Total Deduction</div>
             <div class="stat-value text-success"><?= formatCurrency($totalDeduct) ?></div>
-            <div class="stat-change up">at $<?= $rate ?>/mile</div>
+            <div class="stat-change up">at £<?= $rate ?>/mile</div>
           </div>
         </div>
         <div class="stat-card" style="--accent:var(--info)">
@@ -102,11 +102,11 @@ $years       = range(date('Y'), date('Y') - 5);
             <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" width="40" height="40"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           </div>
           <div style="flex:1">
-            <div style="color:white;font-size:15px;font-weight:700;margin-bottom:4px">IRS Standard Mileage Rate <?= $year ?></div>
-            <div style="color:rgba(255,255,255,.75);font-size:13px">The IRS standard mileage rate for business use is <strong style="color:#FF7421">$<?= $rate ?> per mile</strong>. This rate is automatically applied to all your trips.</div>
+            <div style="color:white;font-size:15px;font-weight:700;margin-bottom:4px">HMRC Standard Mileage Rate <?= $year ?></div>
+            <div style="color:rgba(255,255,255,.75);font-size:13px">The HMRC standard mileage rate for business use is <strong style="color:#FF7421">£<?= $rate ?> per mile</strong>. This rate is automatically applied to all your trips.</div>
           </div>
           <div style="text-align:center;background:rgba(255,255,255,.1);border-radius:12px;padding:14px 24px">
-            <div style="font-size:28px;font-weight:800;color:#FF7421">$<?= $rate ?></div>
+            <div style="font-size:28px;font-weight:800;color:#FF7421">£<?= $rate ?></div>
             <div style="font-size:12px;color:rgba(255,255,255,.6)">per mile</div>
           </div>
         </div>
@@ -116,7 +116,7 @@ $years       = range(date('Y'), date('Y') - 5);
       <div class="card">
         <div class="card-header" style="padding:20px 24px">
           <span class="card-title">Trip Log</span>
-          <div class="admin-search" style="min-width:220px">
+          <div class="table-search" style="min-width:220px">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" id="tableSearch" placeholder="Search trips...">
           </div>
@@ -220,9 +220,9 @@ $years       = range(date('Y'), date('Y') - 5);
           <div style="background:var(--gray-50);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
             <div>
               <div style="font-size:12px;color:var(--gray-500);margin-bottom:2px">Estimated Deduction</div>
-              <div style="font-size:20px;font-weight:800;color:var(--success)" id="deductionPreview">$0.00</div>
+              <div style="font-size:20px;font-weight:800;color:var(--success)" id="deductionPreview">£0.00</div>
             </div>
-            <div style="font-size:12px;color:var(--gray-400)">at $<?= $rate ?>/mile</div>
+            <div style="font-size:12px;color:var(--gray-400)">at £<?= $rate ?>/mile</div>
           </div>
         </div>
         <div class="form-group">
@@ -248,7 +248,7 @@ const RATE = <?= $rate ?>;
 
 function calcDeduction() {
   const miles = parseFloat(document.getElementById('milesInput').value) || 0;
-  document.getElementById('deductionPreview').textContent = '$' + (miles * RATE).toFixed(2);
+  document.getElementById('deductionPreview').textContent = '£' + (miles * RATE).toFixed(2);
 }
 
 async function saveMileage() {

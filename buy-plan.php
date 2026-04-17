@@ -125,7 +125,7 @@ $plans = $planStmt->fetchAll();
                 <?php if ((float)$p['price_monthly'] === 0.0): ?>
                   <span style="font-size:36px">Free</span>
                 <?php else: ?>
-                  <span>$</span><?= number_format($p['price_monthly'],0) ?>
+                  <span>£</span><?= number_format($p['price_monthly'],0) ?>
                 <?php endif; ?>
               </div>
               <?php if ((float)$p['price_monthly'] > 0): ?><div class="period">/month billed monthly</div><?php endif; ?>
@@ -251,14 +251,14 @@ function updatePrices() {
     const y = parseFloat(el.dataset.yearly);
     if (m === 0) return;
     const price = isYearly ? (y/12) : m;
-    el.innerHTML = '<span>$</span>' + price.toFixed(0);
+    el.innerHTML = '<span>£</span>' + price.toFixed(0);
     el.nextElementSibling.textContent = isYearly ? '/month billed annually' : '/month billed monthly';
   });
 }
 
 function selectPlan(slug, name, price) {
   document.getElementById('checkoutTitle').textContent = 'Upgrade to ' + name;
-  document.getElementById('checkoutPrice').textContent = '$' + (isYearly ? (price*12*.83).toFixed(2) : price.toFixed(2));
+  document.getElementById('checkoutPrice').textContent = '£' + (isYearly ? (price*12*.83).toFixed(2) : price.toFixed(2));
   openModal('checkoutModal');
 }
 

@@ -64,7 +64,7 @@ $years = range(date('Y'), date('Y') - 5);
           </div>
           <div class="stat-content">
             <div class="stat-label">Total Income</div>
-            <div class="stat-value text-success" data-animate-number="<?= $stats['income'] ?>" data-prefix="$">$0.00</div>
+            <div class="stat-value text-success" data-animate-number="<?= $stats['income'] ?>" data-prefix="£">£0.00</div>
             <div class="stat-change up">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg>
               <?= $year ?> Year
@@ -78,7 +78,7 @@ $years = range(date('Y'), date('Y') - 5);
           </div>
           <div class="stat-content">
             <div class="stat-label">Total Expenses</div>
-            <div class="stat-value text-danger" data-animate-number="<?= $stats['expenses'] ?>" data-prefix="$">$0.00</div>
+            <div class="stat-value text-danger" data-animate-number="<?= $stats['expenses'] ?>" data-prefix="£">£0.00</div>
             <div class="stat-change down">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
               <?= $year ?> Year
@@ -93,7 +93,7 @@ $years = range(date('Y'), date('Y') - 5);
           <div class="stat-content">
             <div class="stat-label">Net Profit</div>
             <div class="stat-value <?= $stats['profit'] >= 0 ? 'text-info' : 'text-warning' ?>"
-                 data-animate-number="<?= abs($stats['profit']) ?>" data-prefix="<?= $stats['profit'] < 0 ? '-$' : '$' ?>">$0.00</div>
+                 data-animate-number="<?= abs($stats['profit']) ?>" data-prefix="<?= $stats['profit'] < 0 ? '-£' : '£' ?>">£0.00</div>
             <div class="stat-change <?= $stats['profit'] >= 0 ? 'up' : 'down' ?>">
               <?= $stats['profit'] >= 0 ? 'Profitable' : 'Net Loss' ?>
             </div>
@@ -106,7 +106,7 @@ $years = range(date('Y'), date('Y') - 5);
           </div>
           <div class="stat-content">
             <div class="stat-label">Mileage Deduction</div>
-            <div class="stat-value text-orange" data-animate-number="<?= $stats['mile_deduction'] ?>" data-prefix="$">$0.00</div>
+            <div class="stat-value text-orange" data-animate-number="<?= $stats['mile_deduction'] ?>" data-prefix="£">£0.00</div>
             <div class="stat-change up"><?= number_format($stats['miles'], 1) ?> miles</div>
           </div>
         </div>
@@ -287,7 +287,7 @@ new Chart(document.getElementById('monthlyChart'), {
     responsive:true, maintainAspectRatio:false,
     plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, boxWidth:8, font:{ size:12 } } } },
     scales:{
-      y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,.06)' }, ticks:{ callback: v => '$'+v.toLocaleString() } },
+      y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,.06)' }, ticks:{ callback: v => '£'+v.toLocaleString() } },
       x:{ grid:{ display:false } }
     }
   }
