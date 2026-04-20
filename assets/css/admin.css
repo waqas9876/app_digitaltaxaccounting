@@ -175,3 +175,31 @@
   height: 1px;
   background: #E2E7F0;
 }
+
+/* --- ADMIN RESPONSIVE --- */
+@media (max-width: 1023px) {
+  .admin-stat-card { padding: 16px 18px; gap: 12px; }
+  .admin-stat-icon { width: 44px; height: 44px; }
+  .admin-stat-num  { font-size: 24px; }
+}
+
+@media (max-width: 768px) {
+  .admin-search { width: 100%; }
+  .admin-stat-card { padding: 14px 16px; gap: 10px; }
+  .admin-stat-icon { width: 40px; height: 40px; }
+  .admin-stat-icon svg { width: 20px; height: 20px; }
+  .admin-stat-num  { font-size: 22px; }
+  .admin-stat-lbl  { font-size: 12px; }
+  .client-row { gap: 10px; padding: 12px 0; }
+  .client-name  { font-size: 13px; }
+  .client-email { font-size: 11px; }
+}
+
+@media (max-width: 480px) {
+  .admin-stat-card { padding: 12px; gap: 8px; }
+  .admin-stat-icon { width: 36px; height: 36px; border-radius: 10px; }
+  .admin-stat-icon svg { width: 18px; height: 18px; }
+  .admin-stat-num  { font-size: 20px; }
+  .quick-action { padding: 5px 10px; font-size: 12px; }
+  .edit-section { margin-bottom: 20px; padding-bottom: 20px; }
+}

@@ -29,7 +29,7 @@ $total      = array_sum(array_column($records, 'amount'));
 $deductible = array_sum(array_column(array_filter($records, fn($r) => $r['is_deductible']), 'amount'));
 $years      = range(date('Y'), date('Y') - 5);
 
-$categories = ['General','Office Supplies','Software/Subscriptions','Marketing & Advertising','Travel','Meals & Entertainment','Professional Services','Insurance','Utilities','Rent/Lease','Equipment','Vehicle','Education','Taxes & Licenses','Other'];
+$categories = ['Fuel','Maintenance','Car Cleaning','Tolls & Parking','Insurance','Radio/Commission','Car Rental','Car Purchase/Lease','Phone','License Fees','Legal Fees','Other'];
 ?>
 
 <div class="app-layout">

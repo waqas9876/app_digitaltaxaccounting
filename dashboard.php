@@ -140,8 +140,8 @@ $years = range(date('Y'), date('Y') - 5);
                 <a href="/expenses.php" class="btn btn-primary btn-sm mt-16">Add Expense</a>
               </div>
             <?php else: ?>
-              <div style="display:flex;align-items:center;gap:20px;">
-                <div style="width:160px;height:160px;flex-shrink:0;">
+              <div class="donut-wrapper">
+                <div class="donut-chart">
                   <canvas id="expenseDonut"></canvas>
                 </div>
                 <div style="flex:1">
