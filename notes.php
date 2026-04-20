@@ -81,7 +81,7 @@ $colors = ['#FF7421','#16295A','#10B981','#3B82F6','#F59E0B','#8B5CF6','#EC4899'
       <!-- Filter Bar -->
       <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
         <form method="GET" style="flex:1;min-width:220px">
-          <div class="admin-search">
+          <div class="table-search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" name="q" placeholder="Search notes..." value="<?= sanitize($q) ?>">
           </div>
