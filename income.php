@@ -8,6 +8,44 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css">
+  <style>
+    /* Summary card */
+    .income-summary { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+    .income-total   { flex:1; min-width:180px; }
+    .income-stats   { display:flex; gap:12px; flex-wrap:wrap; }
+    .income-stat-box { text-align:center; padding:12px 20px; background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+    .income-stat-box .snum { font-size:22px; font-weight:800; color:var(--blue); }
+    .income-stat-box .slbl { font-size:12px; color:var(--gray-500); }
+
+    /* Header actions on mobile */
+    @media (max-width: 600px) {
+      .header-actions { flex-wrap:wrap; justify-content:flex-end; }
+      .header-actions .btn-sm span { display:none; }
+    }
+
+    /* Table: hide non-critical columns on mobile */
+    @media (max-width: 768px) {
+      /* Hide: Company(3), Payment Method(5), Tax Year(6), Document(7), Other Docs(8), Notes(9) */
+      #incomeTable th:nth-child(3), #incomeTable td:nth-child(3),
+      #incomeTable th:nth-child(5), #incomeTable td:nth-child(5),
+      #incomeTable th:nth-child(6), #incomeTable td:nth-child(6),
+      #incomeTable th:nth-child(7), #incomeTable td:nth-child(7),
+      #incomeTable th:nth-child(8), #incomeTable td:nth-child(8),
+      #incomeTable th:nth-child(9), #incomeTable td:nth-child(9) { display:none; }
+      #incomeTable tfoot { display:none; }
+
+      .income-summary { flex-direction:column; align-items:flex-start; gap:14px; }
+      .income-stats   { width:100%; }
+      .income-stat-box { flex:1; padding:10px 12px; }
+    }
+
+    @media (max-width: 480px) {
+      /* Also hide Category(4) on very small screens */
+      #incomeTable th:nth-child(4), #incomeTable td:nth-child(4) { display:none; }
+      .income-stat-box .snum { font-size:18px; }
+      .income-stat-box { padding:8px 10px; }
+    }
+  </style>
 </head>
 <body>
 <?php
@@ -79,24 +117,24 @@ $categories = [
 
       <!-- Summary Card -->
       <div class="card mb-24" style="background:linear-gradient(135deg,#ECFDF5 0%,#F0FFF8 100%);border-color:#A7F3D0;">
-        <div class="card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-          <div style="flex:1">
+        <div class="card-body income-summary">
+          <div class="income-total">
             <div style="font-size:13px;color:var(--success);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Income — <?= $year ?></div>
             <div style="font-size:36px;font-weight:800;color:#065f46"><?= formatCurrency($total) ?></div>
           </div>
-          <div style="display:flex;gap:16px;flex-wrap:wrap">
-            <div style="text-align:center;padding:12px 20px;background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-              <div style="font-size:22px;font-weight:800;color:var(--blue)"><?= count($records) ?></div>
-              <div style="font-size:12px;color:var(--gray-500)">Entries</div>
+          <div class="income-stats">
+            <div class="income-stat-box">
+              <div class="snum"><?= count($records) ?></div>
+              <div class="slbl">Entries</div>
             </div>
-            <div style="text-align:center;padding:12px 20px;background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-              <div style="font-size:22px;font-weight:800;color:var(--blue)"><?= count(array_unique(array_column($records,'category'))) ?></div>
-              <div style="font-size:12px;color:var(--gray-500)">Categories</div>
+            <div class="income-stat-box">
+              <div class="snum"><?= count(array_unique(array_column($records,'category'))) ?></div>
+              <div class="slbl">Categories</div>
             </div>
             <?php if (count($records) > 0): ?>
-            <div style="text-align:center;padding:12px 20px;background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-              <div style="font-size:22px;font-weight:800;color:var(--blue)"><?= formatCurrency($total / count($records)) ?></div>
-              <div style="font-size:12px;color:var(--gray-500)">Avg. Entry</div>
+            <div class="income-stat-box">
+              <div class="snum"><?= formatCurrency($total / count($records)) ?></div>
+              <div class="slbl">Avg. Entry</div>
             </div>
             <?php endif; ?>
           </div>
