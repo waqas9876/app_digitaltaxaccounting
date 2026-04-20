@@ -81,6 +81,8 @@ input, textarea, select { font-family: inherit; }
   display: flex;
   flex-direction: column;
   transition: margin-left var(--transition);
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .page-body {

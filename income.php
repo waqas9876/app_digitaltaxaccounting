@@ -11,17 +11,11 @@
   <style>
     /* Summary card */
     .income-summary { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-    .income-total   { flex:1; min-width:180px; }
-    .income-stats   { display:flex; gap:12px; flex-wrap:wrap; }
-    .income-stat-box { text-align:center; padding:12px 20px; background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
-    .income-stat-box .snum { font-size:22px; font-weight:800; color:var(--blue); }
+    .income-total   { flex:1; min-width:160px; }
+    .income-stats   { display:flex; gap:10px; flex-wrap:wrap; flex-shrink:0; }
+    .income-stat-box { text-align:center; padding:12px 16px; background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); min-width:80px; }
+    .income-stat-box .snum { font-size:20px; font-weight:800; color:var(--blue); word-break:break-all; }
     .income-stat-box .slbl { font-size:12px; color:var(--gray-500); }
-
-    /* Header actions on mobile */
-    @media (max-width: 600px) {
-      .header-actions { flex-wrap:wrap; justify-content:flex-end; }
-      .header-actions .btn-sm span { display:none; }
-    }
 
     /* Table: hide non-critical columns on mobile */
     @media (max-width: 768px) {
