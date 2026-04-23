@@ -42,60 +42,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-  <div class="auth-bg">
-    <div class="auth-particles"></div>
-  </div>
+  <div style="position:fixed;inset:0;z-index:0;background:#080F20"></div>
+  <div style="position:fixed;inset:0;z-index:0;
+    background-image:linear-gradient(to right,rgba(255,116,33,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,116,33,.12) 1px,transparent 1px);
+    background-size:32px 32px;
+    -webkit-mask-image:radial-gradient(ellipse at center,white 30%,transparent 80%);
+    mask-image:radial-gradient(ellipse at center,white 30%,transparent 80%);
+  "></div>
 
-  <div class="auth-container">
-    <!-- Brand Panel -->
-    <div class="auth-brand">
-      <div class="brand-logo">
-        <div class="brand-logo-icon">
-          <img src="/assets/images/logo.png" alt="Digital Tax Accounting">
-        </div>
-      </div>
-
-      <h1 class="brand-headline">Start Filing<br><span>Smarter</span> Today</h1>
-      <p class="brand-sub">Create your free account and get access to all your tax tracking tools in one place.</p>
-
-      <ul class="brand-features">
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </span>
-          Fully secure & encrypted
-        </li>
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          </span>
-          Beautiful, easy-to-use dashboard
-        </li>
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </span>
-          Real-time financial insights
-        </li>
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </span>
-          Start free, upgrade anytime
-        </li>
-      </ul>
-
-      <div class="brand-stats">
-        <div class="brand-stat"><span class="num">Free</span><span class="lbl">To Start</span></div>
-        <div class="brand-stat"><span class="num">5 min</span><span class="lbl">Setup</span></div>
-        <div class="brand-stat"><span class="num">24/7</span><span class="lbl">Support</span></div>
-      </div>
-    </div>
+  <div class="auth-container" style="justify-content:center">
 
     <!-- Form Panel -->
-    <div class="auth-form-panel">
+    <div class="auth-form-panel" style="max-width:580px;width:100%">
       <div class="auth-card">
         <div class="auth-card-header">
+          <div style="text-align:center;margin-bottom:20px">
+            <img src="/assets/images/logo-full.png" alt="Digital Tax Accounting" style="width:220px;max-width:100%;height:auto;object-fit:contain;">
+          </div>
           <h2>Create Your Account</h2>
           <p>Join hundreds of clients managing taxes smarter</p>
         </div>
@@ -212,8 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </label>
           </div>
 
-          <button type="submit" class="auth-submit">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          <button type="submit" class="auth-submit" style="padding:11px;font-size:14px;">
             Create Free Account
           </button>
         </form>
@@ -258,14 +220,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       label.style.color = colors[score];
     }
 
-    // Particles
-    const container = document.querySelector('.auth-particles');
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.cssText = `left:${Math.random()*100}%;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;animation-duration:${6+Math.random()*12}s;animation-delay:${Math.random()*8}s;`;
-      container.appendChild(p);
-    }
   </script>
 </body>
 </html>

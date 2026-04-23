@@ -34,58 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-  <div class="auth-bg">
-    <div class="auth-particles"></div>
-  </div>
+  <div style="position:fixed;inset:0;z-index:0;background:#080F20"></div>
+  <div style="position:fixed;inset:0;z-index:0;
+    background-image:linear-gradient(to right,rgba(255,116,33,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,116,33,.12) 1px,transparent 1px);
+    background-size:32px 32px;
+    -webkit-mask-image:radial-gradient(ellipse at center,white 30%,transparent 80%);
+    mask-image:radial-gradient(ellipse at center,white 30%,transparent 80%);
+  "></div>
 
-  <div class="auth-container">
-    <!-- Brand Panel -->
-    <div class="auth-brand">
-      <div class="brand-logo">
-        <div class="brand-logo-icon">
-          <img src="/assets/images/logo.png" alt="Digital Tax Accounting">
-        </div>
-      </div>
-
-      <h1 class="brand-headline">Your Taxes,<br><span>Simplified</span></h1>
-      <p class="brand-sub">Track income, expenses, mileage, and more. Get your taxes filed stress-free with our all-in-one portal.</p>
-
-      <ul class="brand-features">
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-          </span>
-          Track income & expenses in real time
-        </li>
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
-          </span>
-          Auto-calculate mileage deductions
-        </li>
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </span>
-          Tax summaries & year-end reports
-        </li>
-        <li>
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </span>
-          Secure, encrypted data storage
-        </li>
-      </ul>
-
-      <div class="brand-stats">
-        <div class="brand-stat"><span class="num">500+</span><span class="lbl">Clients</span></div>
-        <div class="brand-stat"><span class="num">£2M+</span><span class="lbl">Tax Savings</span></div>
-        <div class="brand-stat"><span class="num">99%</span><span class="lbl">Accuracy</span></div>
-      </div>
-    </div>
+  <div class="auth-container" style="justify-content:center">
 
     <!-- Form Panel -->
-    <div class="auth-form-panel">
+    <div class="auth-form-panel" style="max-width:580px;width:100%">
       <div class="auth-card">
         <div class="auth-card-header">
           <div style="text-align:center;margin-bottom:20px">
@@ -168,14 +128,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
-    // Generate particles
-    const container = document.querySelector('.auth-particles');
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.cssText = `left:${Math.random()*100}%;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;animation-duration:${6+Math.random()*12}s;animation-delay:${Math.random()*8}s;`;
-      container.appendChild(p);
-    }
   </script>
 </body>
 </html>

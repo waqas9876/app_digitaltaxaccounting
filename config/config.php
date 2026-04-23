@@ -21,6 +21,15 @@ define('UPLOAD_DIR', __DIR__ . '/../assets/uploads/');
 define('UPLOAD_MAX_SIZE', 5 * 1024 * 1024); // 5MB
 define('ALLOWED_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'application/pdf']);
 
+// SMTP Email Settings
+define('SMTP_HOST',      'smtp.gmail.com');   // Gmail: smtp.gmail.com | Hostinger: mail.yourdomain.com
+define('SMTP_PORT',      587);                // 587 = TLS, 465 = SSL
+define('SMTP_SECURE',    'tls');              // 'tls' or 'ssl'
+define('SMTP_USER',      'your@gmail.com');   // Your email address
+define('SMTP_PASS',      'your-app-password');// Gmail: 16-char App Password | Hostinger: email password
+define('SMTP_FROM',      'your@gmail.com');   // Sender email
+define('SMTP_FROM_NAME', APP_NAME);           // Sender name
+
 // Tax rate (HMRC standard mileage rate)
 define('STANDARD_MILEAGE_RATE', 0.67);
 

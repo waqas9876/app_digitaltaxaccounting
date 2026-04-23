@@ -51,6 +51,21 @@
     }
     .plan-features li svg { width: 16px; height: 16px; color: var(--success); flex-shrink: 0; margin-top: 1px; }
     .plan-cta { width: 100%; padding: 13px; border-radius: 10px; font-size: 15px; font-weight: 700; }
+    .plan-tab {
+      padding: 9px 24px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .plan-tab:hover { color: var(--blue); }
+    .plan-tab.active { background: white; color: var(--blue); box-shadow: 0 2px 8px rgba(22,41,90,.12); }
+    .plan-tab-panel { display: none; }
+    .plan-tab-panel.active { display: block; }
   </style>
 </head>
 <body>
@@ -81,79 +96,188 @@ $plans = $planStmt->fetchAll();
     </header>
 
     <div class="page-body">
-      <!-- Toggle Monthly/Yearly -->
+
+      <!-- Tab Switcher -->
       <div style="text-align:center;margin-bottom:32px">
-        <div style="display:inline-flex;background:var(--gray-100);border-radius:12px;padding:4px;gap:4px">
-          <button id="btnMonthly" class="btn btn-secondary btn-sm" style="min-width:110px">Monthly</button>
-          <button id="btnYearly"  class="btn btn-ghost btn-sm"     style="min-width:110px">Yearly <span style="color:var(--success);font-size:11px;font-weight:700">-17%</span></button>
+        <div style="display:inline-flex;background:var(--gray-100);border-radius:14px;padding:5px;gap:4px">
+          <button class="plan-tab active" data-tab="mtd">MTD</button>
+          <button class="plan-tab" data-tab="nonmtd">NON MTD</button>
+          <button class="plan-tab" data-tab="companies">For Companies</button>
         </div>
-        <p style="font-size:13px;color:var(--gray-500);margin-top:8px">Save up to 17% with annual billing</p>
+        <p id="tabDesc" style="font-size:13px;color:var(--gray-500);margin-top:10px">Making Tax Digital — for sole traders &amp; landlords mandated under HMRC MTD scheme</p>
       </div>
 
-      <!-- Plans Grid -->
-      <div class="grid grid-4 mb-24" style="gap:20px">
-        <?php
-        $planIcons = [
-          'free'         => ['bg'=>'#F1F3F8','color'=>'#6B7D99'],
-          'basic'        => ['bg'=>'#ECFDF5','color'=>'#10B981'],
-          'professional' => ['bg'=>'#FFF4EE','color'=>'#FF7421'],
-          'premium'      => ['bg'=>'#FFFBEB','color'=>'#F59E0B'],
-        ];
-        $planIconSVGs = [
-          'free' => '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
-          'basic' => '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
-          'professional' => '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
-          'premium' => '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
-        ];
-        foreach ($plans as $p):
-          $isCurrentPlan = $client['plan'] === $p['slug'];
-          $isPopular      = $p['slug'] === 'professional';
-          $ic = $planIcons[$p['slug']] ?? $planIcons['free'];
-          $features = json_decode($p['features'] ?? '[]', true);
-        ?>
-          <div class="plan-card <?= $isPopular ? 'popular' : '' ?>">
-            <?php if ($isPopular): ?><div class="popular-badge">POPULAR</div><?php endif; ?>
-            <div class="plan-icon" style="background:<?= $ic['bg'] ?>;color:<?= $ic['color'] ?>">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <?= $planIconSVGs[$p['slug']] ?? '' ?>
-              </svg>
+      <?php
+      $planIcons = [
+        'free'         => ['bg'=>'#F1F3F8','color'=>'#6B7D99'],
+        'basic'        => ['bg'=>'#ECFDF5','color'=>'#10B981'],
+        'professional' => ['bg'=>'#FFF4EE','color'=>'#FF7421'],
+        'premium'      => ['bg'=>'#FFFBEB','color'=>'#F59E0B'],
+      ];
+      $planIconSVGs = [
+        'free' => '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+        'basic' => '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+        'professional' => '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+        'premium' => '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+      ];
+      $mtdProFeatures    = ['Free registration to HMRC','Use of WebApp all data digitally saved','Quarterly submissions to HMRC','Final submission to HMRC','Self Assessment return submission to HMRC'];
+      $mtdProPlusFeatures = array_merge($mtdProFeatures, ['Further enhanced accountancy services support loans, mortgage and tax enquiry work']);
+      ?>
+
+      <!-- Tab Panel: MTD -->
+      <div class="plan-tab-panel active" data-panel="mtd">
+        <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+
+          <!-- PRO -->
+          <div class="plan-card" style="width:500px;flex-shrink:0">
+            <div class="plan-icon" style="background:#EFF6FF;color:#3B82F6">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             </div>
-            <div class="plan-name"><?= sanitize($p['name']) ?></div>
-            <div class="plan-desc"><?= sanitize($p['description']) ?></div>
+            <div class="plan-name">PRO</div>
+            <div class="plan-desc">Best for part-time or low-volume drivers who need simple HMRC compliance.</div>
             <div class="plan-price">
-              <div class="amount" data-monthly="<?= $p['price_monthly'] ?>" data-yearly="<?= $p['price_yearly'] ?>">
-                <?php if ((float)$p['price_monthly'] === 0.0): ?>
-                  <span style="font-size:36px">Free</span>
-                <?php else: ?>
-                  <span>£</span><?= number_format($p['price_monthly'],0) ?>
-                <?php endif; ?>
-              </div>
-              <?php if ((float)$p['price_monthly'] > 0): ?><div class="period">/month billed monthly</div><?php endif; ?>
+              <div class="amount"><span>£</span>235</div>
+              <div class="period">/ year</div>
             </div>
             <ul class="plan-features">
-              <?php foreach ($features as $feature): ?>
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <?= sanitize($feature) ?>
-                </li>
+              <?php foreach ($mtdProFeatures as $f): ?>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><?= $f ?></li>
               <?php endforeach; ?>
             </ul>
-            <?php if ($isCurrentPlan): ?>
-              <button class="btn btn-ghost plan-cta" disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
-                Current Plan
-              </button>
-            <?php elseif ((float)$p['price_monthly'] === 0.0): ?>
-              <button class="btn btn-ghost plan-cta" disabled>Free Plan</button>
-            <?php else: ?>
-              <button class="btn <?= $isPopular ? 'btn-primary' : 'btn-secondary' ?> plan-cta"
-                      onclick="selectPlan('<?= $p['slug'] ?>', '<?= sanitize($p['name']) ?>', <?= $p['price_monthly'] ?>)">
-                Get <?= sanitize($p['name']) ?>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
-            <?php endif; ?>
+            <button class="btn btn-secondary plan-cta" onclick="selectPlan('pro','PRO',235)">
+              Get PRO
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
           </div>
-        <?php endforeach; ?>
+
+          <!-- PRO+ (popular) -->
+          <div class="plan-card popular" style="width:500px;flex-shrink:0">
+            <div class="popular-badge">POPULAR</div>
+            <div class="plan-icon" style="background:#FFF4EE;color:#FF7421">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="plan-name">PRO+</div>
+            <div class="plan-desc">Best for full-time taxi and ride-share drivers.</div>
+            <div class="plan-price">
+              <div class="amount"><span>£</span>300</div>
+              <div class="period">/ year</div>
+            </div>
+            <ul class="plan-features">
+              <?php foreach ($mtdProPlusFeatures as $f): ?>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><?= $f ?></li>
+              <?php endforeach; ?>
+            </ul>
+            <button class="btn btn-primary plan-cta" onclick="selectPlan('pro-plus','PRO+',300)">
+              Get PRO+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab Panel: NON MTD -->
+      <div class="plan-tab-panel" data-panel="nonmtd">
+        <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+
+          <!-- NON MTD PRO -->
+          <div class="plan-card" style="width:500px;flex-shrink:0">
+            <div class="plan-icon" style="background:#EFF6FF;color:#3B82F6">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="plan-name">PRO</div>
+            <div class="plan-desc">Best for part-time or low-volume drivers who need simple HMRC compliance.</div>
+            <div class="plan-price">
+              <div class="amount"><span>£</span>135</div>
+              <div class="period">/ year</div>
+            </div>
+            <ul class="plan-features">
+              <?php foreach (['Taximanager web APP to record your income and expenses','Accounts and self assessment return prepared and submitted to HMRC','User software licence.','Lifetime Support'] as $f): ?>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><?= $f ?></li>
+              <?php endforeach; ?>
+            </ul>
+            <button class="btn btn-secondary plan-cta" onclick="selectPlan('nonmtd-pro','PRO',135)">
+              Get PRO
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+
+          <!-- NON MTD PRO+ (popular) -->
+          <div class="plan-card popular" style="width:500px;flex-shrink:0">
+            <div class="popular-badge">POPULAR</div>
+            <div class="plan-icon" style="background:#FFF4EE;color:#FF7421">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="plan-name">PRO+</div>
+            <div class="plan-desc">Best for full-time taxi and ride-share drivers.</div>
+            <div class="plan-price">
+              <div class="amount"><span>£</span>180</div>
+              <div class="period">/ year</div>
+            </div>
+            <ul class="plan-features">
+              <?php foreach (['Support for mortgage/loan applications','HMRC enquiry - our fees included','Any accountancy certificates required for visa applications','General support for any institutions requiring accountancy reports','Mid year accounts required'] as $f): ?>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><?= $f ?></li>
+              <?php endforeach; ?>
+            </ul>
+            <button class="btn btn-primary plan-cta" onclick="selectPlan('nonmtd-pro-plus','PRO+',180)">
+              Get PRO+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab Panel: FOR COMPANIES -->
+      <div class="plan-tab-panel" data-panel="companies">
+        <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+
+          <!-- NON-VAT REGISTERED -->
+          <div class="plan-card" style="width:500px;flex-shrink:0">
+            <div class="plan-icon" style="background:#EFF6FF;color:#3B82F6">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            </div>
+            <div class="plan-name">Non-VAT Registered</div>
+            <div class="plan-desc">Best for small limited companies not registered for VAT.</div>
+            <div class="plan-price">
+              <div class="amount"><span>£</span>45</div>
+              <div class="period">/ month</div>
+            </div>
+            <ul class="plan-features">
+              <?php foreach (['Company formation support','Confirmation Statement (CS01) filing','Annual accounts preparation & submission','Corporation tax return (CT600) filing','Basic bookkeeping','Email support & deadline reminders','HMRC & Companies House compliance'] as $f): ?>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><?= $f ?></li>
+              <?php endforeach; ?>
+            </ul>
+            <button class="btn btn-secondary plan-cta" onclick="selectPlan('non-vat','Non-VAT Registered',45)">
+              Get Started
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+
+          <!-- VAT REGISTERED (popular) -->
+          <div class="plan-card popular" style="width:500px;flex-shrink:0">
+            <div class="popular-badge">POPULAR</div>
+            <div class="plan-icon" style="background:#FFF4EE;color:#FF7421">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="plan-name">VAT Registered</div>
+            <div class="plan-desc">Best for growing companies registered for VAT.</div>
+            <div class="plan-price">
+              <div class="amount"><span>£</span>55</div>
+              <div class="period">/ month</div>
+            </div>
+            <ul class="plan-features">
+              <?php foreach (['Everything in Non-VAT package','VAT registration','Quarterly VAT return preparation & submission','MTD-compliant bookkeeping','Invoices Management','Bank reconciliation','Corporation tax return (CT600)','Annual accounts submission','Priority support (Email / WhatsApp)','HMRC & Companies House handling'] as $f): ?>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><?= $f ?></li>
+              <?php endforeach; ?>
+            </ul>
+            <button class="btn btn-primary plan-cta" onclick="selectPlan('vat','VAT Registered',55)">
+              Get Started
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+
+        </div>
       </div>
 
       <!-- FAQ -->
@@ -229,36 +353,26 @@ $plans = $planStmt->fetchAll();
 
 <script src="/assets/js/main.js"></script>
 <script>
-let isYearly = false;
+const tabDescs = {
+  mtd:       'Making Tax Digital — for sole traders &amp; landlords mandated under HMRC MTD scheme',
+  nonmtd:    'Non-MTD plans — for individuals &amp; businesses not yet required to use Making Tax Digital',
+  companies: 'Limited company plans — full accounting support for UK registered companies'
+};
 
-document.getElementById('btnMonthly').addEventListener('click',()=>{
-  isYearly=false;
-  document.getElementById('btnMonthly').className='btn btn-secondary btn-sm';
-  document.getElementById('btnYearly').className='btn btn-ghost btn-sm';
-  updatePrices();
-});
-
-document.getElementById('btnYearly').addEventListener('click',()=>{
-  isYearly=true;
-  document.getElementById('btnYearly').className='btn btn-secondary btn-sm';
-  document.getElementById('btnMonthly').className='btn btn-ghost btn-sm';
-  updatePrices();
-});
-
-function updatePrices() {
-  document.querySelectorAll('.plan-price .amount[data-monthly]').forEach(el => {
-    const m = parseFloat(el.dataset.monthly);
-    const y = parseFloat(el.dataset.yearly);
-    if (m === 0) return;
-    const price = isYearly ? (y/12) : m;
-    el.innerHTML = '<span>£</span>' + price.toFixed(0);
-    el.nextElementSibling.textContent = isYearly ? '/month billed annually' : '/month billed monthly';
+document.querySelectorAll('.plan-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.plan-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.plan-tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector('.plan-tab-panel[data-panel="'+tab+'"]').classList.add('active');
+    document.getElementById('tabDesc').innerHTML = tabDescs[tab];
   });
-}
+});
 
 function selectPlan(slug, name, price) {
   document.getElementById('checkoutTitle').textContent = 'Upgrade to ' + name;
-  document.getElementById('checkoutPrice').textContent = '£' + (isYearly ? (price*12*.83).toFixed(2) : price.toFixed(2));
+  document.getElementById('checkoutPrice').textContent = '£' + parseFloat(price).toFixed(2);
   openModal('checkoutModal');
 }
 

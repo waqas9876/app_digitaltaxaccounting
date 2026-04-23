@@ -35,12 +35,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-  <div class="auth-bg" style="background:linear-gradient(135deg,#0F1D3E 0%,#16295A 60%,#1a2f6b 100%)">
-    <div class="auth-particles"></div>
-  </div>
+  <div style="position:fixed;inset:0;z-index:0;background:#080F20"></div>
+  <div style="position:fixed;inset:0;z-index:0;
+    background-image:linear-gradient(to right,rgba(255,116,33,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,116,33,.12) 1px,transparent 1px);
+    background-size:32px 32px;
+    -webkit-mask-image:radial-gradient(ellipse at center,white 30%,transparent 80%);
+    mask-image:radial-gradient(ellipse at center,white 30%,transparent 80%);
+  "></div>
 
   <div style="position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
-    <div class="auth-card" style="max-width:420px">
+    <div class="auth-card" style="max-width:580px;width:100%">
       <div style="text-align:center;margin-bottom:28px">
         <div style="width:280px;max-width:100%;margin:0 auto 18px">
           <img src="/assets/images/logo-full.png" alt="Digital Tax Accounting" style="width:100%;height:auto;object-fit:contain;">
@@ -103,8 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ico.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
       }
     }
-    const c = document.querySelector('.auth-particles');
-    for (let i=0;i<15;i++){const p=document.createElement('div');p.className='particle';p.style.cssText=`left:${Math.random()*100}%;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;animation-duration:${6+Math.random()*12}s;animation-delay:${Math.random()*8}s;`;c.appendChild(p);}
   </script>
 </body>
 </html>
