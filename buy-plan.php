@@ -66,6 +66,42 @@
     .plan-tab.active { background: white; color: var(--blue); box-shadow: 0 2px 8px rgba(22,41,90,.12); }
     .plan-tab-panel { display: none; }
     .plan-tab-panel.active { display: block; }
+
+    /* --- RESPONSIVE --- */
+    .plans-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .plans-row .plan-card {
+      width: min(500px, 100%);
+      flex-shrink: 1;
+      flex-grow: 1;
+      max-width: 500px;
+      min-width: 280px;
+    }
+    .tab-switcher {
+      display: inline-flex;
+      background: var(--gray-100);
+      border-radius: 14px;
+      padding: 5px;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    @media (max-width: 768px) {
+      .plan-tab { padding: 8px 14px; font-size: 13px; }
+      .plans-row { gap: 14px; }
+      .plans-row .plan-card { min-width: 100%; }
+      .plan-price .amount { font-size: 28px; }
+    }
+    @media (max-width: 480px) {
+      .plan-tab { padding: 7px 10px; font-size: 12px; }
+      .plan-card { padding: 20px 16px; }
+      .plan-name { font-size: 17px; }
+    }
   </style>
 </head>
 <body>
@@ -99,7 +135,7 @@ $plans = $planStmt->fetchAll();
 
       <!-- Tab Switcher -->
       <div style="text-align:center;margin-bottom:32px">
-        <div style="display:inline-flex;background:var(--gray-100);border-radius:14px;padding:5px;gap:4px">
+        <div class="tab-switcher">
           <button class="plan-tab active" data-tab="mtd">MTD</button>
           <button class="plan-tab" data-tab="nonmtd">NON MTD</button>
           <button class="plan-tab" data-tab="companies">For Companies</button>
@@ -126,10 +162,10 @@ $plans = $planStmt->fetchAll();
 
       <!-- Tab Panel: MTD -->
       <div class="plan-tab-panel active" data-panel="mtd">
-        <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+        <div class="plans-row">
 
           <!-- PRO -->
-          <div class="plan-card" style="width:500px;flex-shrink:0">
+          <div class="plan-card" >
             <div class="plan-icon" style="background:#EFF6FF;color:#3B82F6">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             </div>
@@ -151,7 +187,7 @@ $plans = $planStmt->fetchAll();
           </div>
 
           <!-- PRO+ (popular) -->
-          <div class="plan-card popular" style="width:500px;flex-shrink:0">
+          <div class="plan-card popular" >
             <div class="popular-badge">POPULAR</div>
             <div class="plan-icon" style="background:#FFF4EE;color:#FF7421">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -178,10 +214,10 @@ $plans = $planStmt->fetchAll();
 
       <!-- Tab Panel: NON MTD -->
       <div class="plan-tab-panel" data-panel="nonmtd">
-        <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+        <div class="plans-row">
 
           <!-- NON MTD PRO -->
-          <div class="plan-card" style="width:500px;flex-shrink:0">
+          <div class="plan-card" >
             <div class="plan-icon" style="background:#EFF6FF;color:#3B82F6">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             </div>
@@ -203,7 +239,7 @@ $plans = $planStmt->fetchAll();
           </div>
 
           <!-- NON MTD PRO+ (popular) -->
-          <div class="plan-card popular" style="width:500px;flex-shrink:0">
+          <div class="plan-card popular" >
             <div class="popular-badge">POPULAR</div>
             <div class="plan-icon" style="background:#FFF4EE;color:#FF7421">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -230,10 +266,10 @@ $plans = $planStmt->fetchAll();
 
       <!-- Tab Panel: FOR COMPANIES -->
       <div class="plan-tab-panel" data-panel="companies">
-        <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+        <div class="plans-row">
 
           <!-- NON-VAT REGISTERED -->
-          <div class="plan-card" style="width:500px;flex-shrink:0">
+          <div class="plan-card" >
             <div class="plan-icon" style="background:#EFF6FF;color:#3B82F6">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
             </div>
@@ -255,7 +291,7 @@ $plans = $planStmt->fetchAll();
           </div>
 
           <!-- VAT REGISTERED (popular) -->
-          <div class="plan-card popular" style="width:500px;flex-shrink:0">
+          <div class="plan-card popular" >
             <div class="popular-badge">POPULAR</div>
             <div class="plan-icon" style="background:#FFF4EE;color:#FF7421">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
